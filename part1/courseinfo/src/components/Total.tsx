@@ -1,15 +1,19 @@
 // Define the type for props
-type TotalProps = {
-  parts: Array<{ name: string; exercises: number }>;
-};
+import { TotalProps } from "../types/course";
+
 // Combine both types for the component props
 
 function Content({ parts }: TotalProps) {
+  const total = parts.reduce((s, p) => {
+    console.log("What is happing", s, p);
+    return s + p.exercises;
+  }, 0);
+
+  console.log(total);
   return (
     <div>
       <p>
-        Number of exercises{" "}
-        {parts[0].exercises + parts[1].exercises + parts[2].exercises}
+        <strong>Overall Total Number of exercises:</strong> {total}
       </p>
     </div>
   );

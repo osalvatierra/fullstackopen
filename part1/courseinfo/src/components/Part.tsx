@@ -1,7 +1,4 @@
-export type PartProps = {
-  name: string;
-  exercises: number;
-};
+import { PartProps } from "../types/course";
 
 function Part({ name, exercises }: PartProps) {
   return (

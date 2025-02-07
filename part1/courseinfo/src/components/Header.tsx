@@ -1,13 +1,12 @@
-// Define the type for props
-type HeaderProps = {
-  course: string; // Change `string` to the correct type if `course` is an object or another type
-};
+import { HeaderProps } from "./types/course";
 
-function Header({ course }: HeaderProps) {
+function Header({ course }: { course: HeaderProps }) {
   return (
     <div>
       <h1>Header</h1>
-      <h1>{course}</h1>
+      {course.map((course) => (
+        <h1 key={course.id}>{course.name}</h1>
+      ))}
     </div>
   );
 }
