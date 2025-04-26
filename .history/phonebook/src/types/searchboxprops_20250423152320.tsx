@@ -1,0 +1,6 @@
+export type SearchBoxProps = {
+  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleName: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleNumber: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+};
