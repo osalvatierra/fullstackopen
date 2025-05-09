@@ -1,5 +1,8 @@
 import axios from "axios";
-const baseUrl = "/api/persons";
+const baseUrl =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:3002/api/persons"
+    : "https://your-backend-service.onrender.com/api/persons";
 import { PersonService } from "../types/personserviceprops";
 import { NewPhonebookEntry, Phonebook } from "../types/phonebook";
 
