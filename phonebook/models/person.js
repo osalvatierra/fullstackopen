@@ -1,10 +1,12 @@
-import { set, connect, Schema, model, mongoose } from 'mongoose';
-set('strictQuery',false);
+const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
+mongoose.set('strictQuery',false);
 
 const url = process.env.MONGODB_URI
 
 console.log('connecting to', url)
-connect(url)
+mongoose.connect(url)
   .then(result => {
     console.log('connected to MongoDB')
   })
@@ -12,7 +14,7 @@ connect(url)
     console.log('error connecting to MongoDB:', error.message)
   })
 
-const personSchema = new Schema({
+const personSchema = new mongoose.Schema({
   name: String,
   number: number,
 })
@@ -25,4 +27,4 @@ personSchema.set('toJSON', {
   }
 })
 
-module.exports = model('Person', personSchema)
+module.exports = mongoose.model('Person', personSchema)
