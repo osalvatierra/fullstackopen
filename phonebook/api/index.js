@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 import express from 'express';
-import Person from '../models/person';
+import Person from '../models/person.js';
 import morgan from 'morgan';
 import cors from 'cors';
 
