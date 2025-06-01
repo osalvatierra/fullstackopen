@@ -1,5 +1,3 @@
-// const mongoose = require('mongoose');
-import mongoose from 'mongoose';
 import { set, connect, Schema, model, mongoose } from 'mongoose';
 set('strictQuery',false);
 
