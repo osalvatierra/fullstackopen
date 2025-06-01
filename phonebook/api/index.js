@@ -1,15 +1,12 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
-const http = require("http");
-const express = require("express");
-const Person = require('../models/person').default
+import express from 'express';
+import Person from '../models/person';
+import morgan from 'morgan';
+import cors from 'cors';
 
-const { Console } = require("console");
-const morgan = require("morgan");
-const cors = require("cors");
 const app = express();
-
 
 const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
@@ -23,16 +20,6 @@ app.use(express.json());
 app.use(requestLogger);
 app.use(morgan("tiny"));
 app.use(cors());
-
-
-// const generateId = () => {
-//   const numericIds = persons
-//     .map((p) => Number(p.id))
-//     .filter((id) => !isNaN(id)); // only valid numeric IDs
-
-//   const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
-//   return String(maxId + 1); // return as string
-// };
 
 app.post("/api/persons", async (request, response) => {
   const body = request.body;
