@@ -3,7 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const http = require("http");
 const express = require("express");
-const Person = require('./models/person')
+const Person = require('../models/person')
 
 const { Console } = require("console");
 const morgan = require("morgan");
