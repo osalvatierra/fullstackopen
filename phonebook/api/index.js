@@ -1,33 +1,13 @@
+require('dotenv').config();
 const http = require("http");
 const express = require("express");
+const Person = require('./models/person')
+
 const { Console } = require("console");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
-const mongoose = require('mongoose')
 
-let persons = [
-  {
-    name: "Dan Abramov",
-    number: 1243234345,
-    id: "3",
-  },
-  {
-    id: "3618effd-454c-45f2-a853-fee968d44b22",
-    name: "Katherin Waterson",
-    number: 234123432,
-  },
-  {
-    id: "ffaf8c7f-c7d4-4caf-8b0c-ec80d5e1ccbe",
-    name: "Ada Lovelace",
-    number: 0,
-  },
-  {
-    id: "982",
-    name: "Katherine Waterston",
-    number: 1233234493,
-  },
-];
 
 const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
@@ -42,6 +22,7 @@ app.use(requestLogger);
 app.use(morgan("tiny"));
 app.use(cors());
 
+
 const generateId = () => {
   const numericIds = persons
     .map((p) => Number(p.id))
@@ -51,7 +32,7 @@ const generateId = () => {
   return String(maxId + 1); // return as string
 };
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", async (request, response) => {
   const body = request.body;
 
   if (!body.name || !body.number) {
@@ -60,21 +41,27 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  if (persons.find((p) => p.name === body.name)) {
-    return response.status(400).json({
-      error: "Name already exists",
+  try {
+    const existingPerson = await Person.findOne({ name: body.name });
+
+    if (existingPerson) {
+      return response.status(400).json({
+        error: "Name already exists",
+      });
+    }
+
+    const person = new Person({
+      name: body.name,
+      number: body.number,
     });
+
+    const savedPerson = await person.save();
+    response.json(savedPerson);
+
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: "Server error" });
   }
-
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: generateId(),
-  };
-
-  persons = persons.concat(person);
-
-  response.json(person);
 });
 
 app.get("/", (request, response) => {
@@ -82,49 +69,67 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
-});
+    Person.find({}).then(persons => {
+    response.json(persons);
+  })
+})
+app.get("/info", async (request, response) => {
+  try {
+    const count = await Person.countDocuments({});
+    const localDateTime = new Date();
+    console.log(localDateTime.toString());
 
-app.get("/info", (request, response) => {
-  const info = persons.length;
-
-  const localDateTime = new Date();
-  console.log(localDateTime.toString());
-  const message = `Phonebook has info for ${info} people. <br/><br/>${localDateTime}`;
-  response.send(message);
-});
-
-app.get("/api/persons/:id", (request, response) => {
-  const id = request.params.id;
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
+    const message = `Phonebook has info for ${count} people. <br/><br/>${localDateTime}`;
+    response.send(message);
+  } catch (error) {
+    response.status(500).send("Error retrieving data from database");
   }
 });
 
-app.put("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  const body = request.body;
 
-  const personIndex = persons.findIndex((p) => p.id === id);
-  if (personIndex === -1) {
-    return response.status(404).json({ error: "person not found" });
-  }
-
-  const updatedPerson = { ...persons[personIndex], ...body };
-  persons[personIndex] = updatedPerson;
-
-  response.json(updatedPerson);
+  Person.findById(id)
+    .then(person => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch(error => next(error)); // Handles invalid ObjectId format errors
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  const id = request.params.id;
-  persons = persons.filter((person) => person.id !== id);
+app.put("/api/persons/:id", (request, response, next) => {
+  const { name, number } = request.body;
 
-  response.status(204).end();
+  const updatedPerson = { name, number };
+
+  Person.findByIdAndUpdate(request.params.id, updatedPerson, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
+    .then(result => {
+      if (result) {
+        response.json(result);
+      } else {
+        response.status(404).json({ error: "person not found" });
+      }
+    })
+    .catch(error => next(error));
+});
+
+app.delete("/api/persons/:id", (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      if (result) {
+        response.status(204).end();
+      } else {
+        response.status(404).json({ error: "person not found" });
+      }
+    })
+    .catch(error => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
@@ -133,6 +138,6 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint);
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);
