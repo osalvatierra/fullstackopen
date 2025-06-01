@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import { set, connect, Schema, model } from 'mongoose';
 
-mongoose.set('strictQuery',false);
+set('strictQuery',false);
 
 const url = process.env.MONGODB_URI
 
 console.log('connecting to', url)
-mongoose.connect(url)
+connect(url)
   .then(result => {
     console.log('connected to MongoDB')
   })
@@ -13,7 +13,7 @@ mongoose.connect(url)
     console.log('error connecting to MongoDB:', error.message)
   })
 
-const personSchema = new mongoose.Schema({
+const personSchema = new Schema({
   name: String,
   number: number,
 })
@@ -26,4 +26,4 @@ personSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Person', personSchema)
+export default model('Person', personSchema)
