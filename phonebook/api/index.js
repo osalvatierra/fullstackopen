@@ -23,14 +23,14 @@ app.use(morgan("tiny"));
 app.use(cors());
 
 
-const generateId = () => {
-  const numericIds = persons
-    .map((p) => Number(p.id))
-    .filter((id) => !isNaN(id)); // only valid numeric IDs
+// const generateId = () => {
+//   const numericIds = persons
+//     .map((p) => Number(p.id))
+//     .filter((id) => !isNaN(id)); // only valid numeric IDs
 
-  const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
-  return String(maxId + 1); // return as string
-};
+//   const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
+//   return String(maxId + 1); // return as string
+// };
 
 app.post("/api/persons", async (request, response) => {
   const body = request.body;
