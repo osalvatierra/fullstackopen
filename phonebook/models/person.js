@@ -1,5 +1,6 @@
-import { set, connect, Schema, model } from 'mongoose';
-
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import { set, connect, Schema, model, mongoose } from 'mongoose';
 set('strictQuery',false);
 
 const url = process.env.MONGODB_URI
@@ -26,4 +27,4 @@ personSchema.set('toJSON', {
   }
 })
 
-export default model('Person', personSchema)
+module.exports = model('Person', personSchema)
