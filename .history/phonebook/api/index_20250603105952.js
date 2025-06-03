@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
+dotenv.config();
 
-if (process.env.NODE_ENV !== "production") {
-  dotenv.config();
-}
 import express from "express";
 import Person from "../models/person.js";
 import morgan from "morgan";
