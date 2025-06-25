@@ -87,7 +87,10 @@ app.get("/api/persons/:id", (request, response, next) => {
         response.status(404).end();
       }
     })
-    .catch((error) => next(error)); // Handles invalid ObjectId format errors
+    .catch((error) => {
+      console.log(error);
+      response.status(400).send({ error: "malformatted id" });
+    }); // Handles invalid ObjectId format errors
 });
 
 app.put("/api/persons/:id", (request, response, next) => {
@@ -111,7 +114,7 @@ app.put("/api/persons/:id", (request, response, next) => {
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
-  Person.findByIdAndRemove(request.params.id)
+  Person.findByIdAndDelete(request.params.id)
     .then((result) => {
       if (result) {
         response.status(204).end();
