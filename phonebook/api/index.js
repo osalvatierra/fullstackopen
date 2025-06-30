@@ -23,7 +23,7 @@ app.use(requestLogger);
 app.use(morgan("tiny"));
 app.use(cors());
 
-app.post("/api/persons", async (request, response) => {
+app.post("/api/persons", async (request, response, next) => {
   const body = request.body;
 
   if (!body.name || !body.number) {
@@ -139,6 +139,8 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === "ValidationError") {
     return response.status(400).json({ error: error.message });
   }
+
+  response.status(500).json({ error: "Internal Server Error" });
 
   next(error);
 };

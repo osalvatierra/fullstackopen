@@ -123,11 +123,22 @@ const App = () => {
         .then((response) => {
           setPersons((prev) => prev.concat(response.data));
           setMessage(`${newName} was added to phonebook`);
+          setIsError(false);
           setTimeout(() => alert(`${newName} added to phonebook.`), 0);
         })
         .catch((error) => {
           console.error(error);
-          setMessage(`A name and number are required.`);
+
+          let errorMessage = "An unexpected error occurred.";
+
+          if (
+            error.response &&
+            error.response.data &&
+            typeof error.response.data.error === "string"
+          ) {
+            errorMessage = error.response.data.error;
+          }
+          setMessage(errorMessage);
           setIsError(true);
         });
     }
