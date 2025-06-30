@@ -26,12 +26,6 @@ app.use(cors());
 app.post("/api/persons", async (request, response, next) => {
   const body = request.body;
 
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "name or number missing",
-    });
-  }
-
   try {
     const existingPerson = await Person.findOne({ name: body.name });
 
