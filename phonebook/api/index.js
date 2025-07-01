@@ -139,7 +139,7 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: error.message });
   }
 
-  return response.status(500).json({ error: "Internal Server Error" });
+  next(error);
 };
 
 app.use(errorHandler);
