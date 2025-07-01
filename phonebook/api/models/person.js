@@ -17,10 +17,13 @@ mongoose
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: 3,
-    required: true,
+    required: [true, "Name is required."],
+    minLength: [3, "Name must be at least 3 characters."],
   },
-  number: Number,
+  number: {
+    type: Number,
+    required: [true, "Phone number is required."],
+  },
 });
 
 personSchema.set("toJSON", {

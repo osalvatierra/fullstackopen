@@ -44,7 +44,7 @@ app.post("/api/persons", async (request, response, next) => {
     response.json(savedPerson);
   } catch (error) {
     console.error(error);
-    response.status(500).json({ error: "Server error" });
+    next(error);
   }
 });
 
