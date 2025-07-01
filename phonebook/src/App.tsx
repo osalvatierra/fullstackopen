@@ -127,7 +127,8 @@ const App = () => {
           setTimeout(() => alert(`${newName} added to phonebook.`), 0);
         })
         .catch((error) => {
-          console.error(error);
+          console.error("Error object:", error);
+          console.error("Error response:", error.response?.data);
 
           let errorMessage = "An unexpected error occurred.";
 
@@ -136,8 +137,12 @@ const App = () => {
             error.response.data &&
             typeof error.response.data.error === "string"
           ) {
-            errorMessage = error.response.data.error;
+            errorMessage = error.response.data.error.replace(
+              "Person validation failed: ",
+              ""
+            );
           }
+
           setMessage(errorMessage);
           setIsError(true);
         });
