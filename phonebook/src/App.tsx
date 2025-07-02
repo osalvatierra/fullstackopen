@@ -132,6 +132,7 @@ const App = () => {
 
           let errorMessage = "An unexpected error occurred.";
 
+          // First try to extract from response if it's available
           if (
             error.response &&
             error.response.data &&
@@ -141,6 +142,14 @@ const App = () => {
               "Person validation failed: ",
               ""
             );
+          } else if (error.message) {
+            // Fallback to error.message if response is undefined
+            const match = error.message.match(/Person validation failed: (.+)/);
+            if (match) {
+              errorMessage = match[1];
+            } else {
+              errorMessage = error.message;
+            }
           }
 
           setMessage(errorMessage);
