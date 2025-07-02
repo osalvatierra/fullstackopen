@@ -11,7 +11,7 @@ import personService from "./services/personService";
 const App = () => {
   const [persons, setPersons] = useState<Phonebook[]>([]);
   const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState<number>(0);
+  const [newNumber, setNewNumber] = useState<string>("");
   // const [filteredPersons, setFilterPersons] = useState(persons);
   const [searchField, setSearchField] = useState("");
   const [message, setMessage] = useState("");
@@ -58,7 +58,7 @@ const App = () => {
 
   const handleNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log(event.target.value);
-    const value = Number(event.target.value) || 0;
+    const value = event.target.value;
     setNewNumber(value);
   };
 
