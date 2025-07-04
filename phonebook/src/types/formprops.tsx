@@ -3,5 +3,5 @@ export type formProps = {
   handleName: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleNumber: (event: React.ChangeEvent<HTMLInputElement>) => void;
   newName: string;
-  newNumber: number;
+  newNumber: string;
 };

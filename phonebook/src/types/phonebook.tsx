@@ -1,7 +1,7 @@
 export interface Phonebook {
   id: string;
   name: string;
-  number: number;
+  number: string;
 }
 export type NewPhonebookEntry = Omit<Phonebook, "id">;
 
