@@ -129,8 +129,9 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const errorHandler = (error, request, response) => {
-  console.error(error.name, error.message)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const errorHandler = (error, request, response, _next) => {
+  console.error('ERROR HANDLER:', error.name, error.message)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
