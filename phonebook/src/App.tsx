@@ -158,7 +158,7 @@ const App = () => {
     }
 
     setNewName("");
-    setNewNumber(0);
+    setNewNumber("");
   };
   console.log("Final persons state:", persons);
   return (
