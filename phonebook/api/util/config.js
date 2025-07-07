@@ -9,4 +9,4 @@ const MONGODB_URI = process.env.MONGODB_URI
 
 console.log(`Server running on port ${PORT}`)
 
-export { MONGODB_URI, PORT }
+export default { MONGODB_URI, PORT }

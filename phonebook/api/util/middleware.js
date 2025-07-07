@@ -31,4 +31,4 @@ const errorHandler = (error, request, response, _next) => {
 }
 
 app.use(errorHandler)
-export { requestLogger, unknownEndpoint, errorHandler }
+export default { requestLogger, unknownEndpoint, errorHandler }
