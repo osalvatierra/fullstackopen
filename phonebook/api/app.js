@@ -27,4 +27,4 @@ app.use('/api/persons', personRouter)
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
-module.exports = app
+export default app

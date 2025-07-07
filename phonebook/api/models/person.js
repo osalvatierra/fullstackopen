@@ -1,11 +1,8 @@
 import mongoose from 'mongoose'
 
 mongoose.set('strictQuery', false)
-
 const url = process.env.MONGODB_URI
-
 console.log('connecting to', url)
-
 
 const personSchema = new mongoose.Schema({
   name: {
