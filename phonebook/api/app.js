@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import config from './util/config.js'
 import logger from './util/logger.js'
 import middleware from './util/middleware.js'
-import personRouter from './controllers/persons'
+import personRouter from './controllers/persons.js'
 import cors from 'cors'
 
 const app = express()
