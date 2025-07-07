@@ -3,7 +3,6 @@ import Person from '../models/person'
 
 const personRouter = express.Router()
 
-
 personRouter.post('/', async (request, response, next) => {
   const body = request.body
 
@@ -28,7 +27,6 @@ personRouter.post('/', async (request, response, next) => {
     next(error)
   }
 })
-
 
 personRouter.get('/', (request, response) => {
   Person.find({}).then((persons) => {
@@ -97,4 +95,4 @@ personRouter.delete('/:id', (request, response, next) => {
     .catch((error) => next(error))
 })
 
-module.exports = personRouter
+export default personRouter

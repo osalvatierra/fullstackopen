@@ -1,8 +1,8 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import config from './util/config.js'
-import logger from './util/logger.js'
-import middleware from './util/middleware.js'
+import config from './util/config'
+import logger from './util/logger'
+import middleware from './util/middleware'
 import personRouter from './controllers/persons'
 
 const app = express()

@@ -1,6 +1,6 @@
 import express from 'express'
-import config from './util/config.js'
-import logger from './util/logger.js'
+import config from './util/config'
+import logger from './util/logger'
 const app = express()
 
 app.listen(config.PORT, () => {
