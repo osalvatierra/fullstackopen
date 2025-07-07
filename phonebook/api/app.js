@@ -4,6 +4,7 @@ import config from './util/config.js'
 import logger from './util/logger.js'
 import middleware from './util/middleware.js'
 import personRouter from './controllers/persons'
+import cors from 'cors'
 
 const app = express()
 
@@ -18,9 +19,10 @@ mongoose
     console.log('error connecting to MongoDB:', error.message)
   })
 
+app.use(cors())
 app.use(express.statis('dist'))
 app.use(express.json())
-app.use(middleware.reqestLogger)
+app.use(middleware.requestLogger)
 
 app.use('/api/persons', personRouter)
 
