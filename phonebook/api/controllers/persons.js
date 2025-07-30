@@ -1,5 +1,6 @@
 import express from 'express'
 import Person from '../models/person.js'
+import User from '../models/users.js'
 
 const personRouter = express.Router()
 
@@ -7,6 +8,12 @@ personRouter.post('/', async (request, response, next) => {
   const body = request.body
 
   try {
+    const user = await User.findById(body.userId)
+
+    if (!user) {
+      return response.status(400).json({ error: 'userId missing or not valid' })
+    }
+
     const existingPerson = await Person.findOne({ name: body.name })
 
     if (existingPerson) {
@@ -18,9 +25,13 @@ personRouter.post('/', async (request, response, next) => {
     const person = new Person({
       name: body.name,
       number: body.number,
+      user: user._id,
     })
 
     const savedPerson = await person.save()
+
+    user.person = user.person.concat(savedPerson._id)
+    await user.save()
     response.json(savedPerson)
   } catch (error) {
     console.error(error)
