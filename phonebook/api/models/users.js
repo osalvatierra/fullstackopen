@@ -4,11 +4,11 @@ const userSchema = new mongoose.Schema({
   username: String,
   name: String,
   passwordHash: String,
-  notes: [
+  persons: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Person'
-    }
+      ref: 'Person',
+    },
   ],
 })
 
@@ -19,7 +19,7 @@ userSchema.set('toJSON', {
     delete returnedObject.__v
     // the passwordHash should not be revealed
     delete returnedObject.passwordHash
-  }
+  },
 })
 
 const User = mongoose.model('User', userSchema)

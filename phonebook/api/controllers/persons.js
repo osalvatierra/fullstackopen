@@ -30,7 +30,7 @@ personRouter.post('/', async (request, response, next) => {
 
     const savedPerson = await person.save()
 
-    user.person = user.person.concat(savedPerson._id)
+    user.persons = user.persons.concat(savedPerson._id)
     await user.save()
     response.json(savedPerson)
   } catch (error) {

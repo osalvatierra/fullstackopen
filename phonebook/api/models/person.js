@@ -20,10 +20,10 @@ const personSchema = new mongoose.Schema({
       message: (props) =>
         `${props.value} is not a valid phone number! Use format XXX-XXX-XXXX.`,
     },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
 })
 
