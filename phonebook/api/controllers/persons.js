@@ -1,14 +1,28 @@
+import jwt from 'jsonwebtoken'
 import express from 'express'
 import Person from '../models/person.js'
 import User from '../models/users.js'
 
 const personRouter = express.Router()
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 personRouter.post('/', async (request, response, next) => {
   const body = request.body
 
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
   try {
-    const user = await User.findById(body.userId)
+    const user = await User.findById(decodedToken.id)
 
     if (!user) {
       return response.status(400).json({ error: 'userId missing or not valid' })
