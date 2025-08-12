@@ -1,170 +1,75 @@
-import { useState, useEffect } from "react";
-import { Phonebook, NewPhonebookEntry } from "./types/phonebook";
+import React from 'react'
+import { useState, useEffect } from 'react'
+import { Phonebook, NewPhonebookEntry } from './types/phonebook'
 
-import PersonForm from "./components/PersonForm";
-import SearchBox from "./components/SearchBox";
-import SearchList from "./components/SearchList";
-import Notifications from "./components/notifications";
+import PersonForm from './components/PersonForm'
+import SearchBox from './components/SearchBox'
+import SearchList from './components/SearchList'
+import Notifications from './components/notifications'
+import loginService from './services/login'
 
-import personService from "./services/personService";
+import personService from './services/personService'
 
 const App = () => {
-  const [persons, setPersons] = useState<Phonebook[]>([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState<string>("");
-  // const [filteredPersons, setFilterPersons] = useState(persons);
-  const [searchField, setSearchField] = useState("");
-  const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false);
+  const [persons, setPersons] = useState<Phonebook[]>([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState<string>('')
 
-  useEffect(() => {
-    console.log("App mounted");
+  const [searchField, setSearchField] = useState('')
+  const [message, setErrorMessage] = useState<string | null>(null)
+  const [isError, setIsError] = useState(false)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
-    return () => {
-      console.log("App unmounted");
-    };
-  }, []);
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
 
-  const hook = () => {
-    console.log("effect");
-    personService.getAll().then((response) => {
-      console.log("promise fullfilled");
-      console.log("Fetched persons:", response.data);
-      setPersons(response.data);
-    });
-  };
-
-  useEffect(hook, []);
-
-  console.log("render", persons.length, "notes");
-
-  // useEffect(() => {
-  //   const newFilteredPersons = persons.filter((person) => {
-  //     return person.name.toLocaleLowerCase().includes(searchField);
-  //   });
-  //   setFilterPersons(newFilteredPersons);
-  // }, [persons, searchField]);
-
-  const filteredPersons = persons.filter((person) =>
-    person.name.toLowerCase().includes(searchField.toLowerCase())
-  );
-
-  const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
-    const value = event.target.value;
-
-    setNewName(value);
-  };
-
-  const handleNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
-    const value = event.target.value;
-    setNewNumber(value);
-  };
-
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchFieldString = event.target.value.toLocaleLowerCase();
-    setSearchField(searchFieldString);
-  };
-
-  const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this contact?")) {
-      personService
-        .remove(id)
-        .then(() => {
-          setPersons(persons.filter((p) => p.id !== id));
-          const deletedName =
-            persons.find((p) => p.id === id)?.name ?? "Unknown";
-          console.log(deletedName);
-          setMessage(`${deletedName} was removed from the phonebook`);
-        })
-        .catch((err) => {
-          console.error(err);
-          alert("Failed to delete contact.");
-        });
+    try {
+      const loginResponse = await loginService.login({
+        username,
+        password,
+      })
+      setUser(loginResponse)
+      setUsername('')
+      setPassword('')
+    } catch (exception: unknown) {
+      console.error('Login failed:', exception)
+      setErrorMessage('Wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
-  };
+  }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event?.preventDefault();
+  const loginForm = () => (
+    <form onSubmit={handleLogin}>
+      <div>
+        username
+        <input
+          type="text"
+          value={username}
+          name="Username"
+          onChange={({ target }) => setUsername(target.value)}
+        />
+      </div>
+      <div>
+        password
+        <input
+          type="password"
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
+      <button type="submit">login</button>
+    </form>
+  )
 
-    const existingPerson = persons.find((p) => p.name === newName);
-
-    if (existingPerson) {
-      console.log(existingPerson);
-      const updatedPerson: Phonebook = {
-        id: existingPerson.id!,
-        name: newName,
-        number: newNumber,
-      };
-      personService
-        .update(existingPerson.id, updatedPerson)
-        .then((response) => {
-          setPersons(
-            persons.map((p) => (p.id === existingPerson.id ? response.data : p))
-          );
-          alert(`${newName} updated sucessfully.`);
-          setMessage(`${newName} was updated`);
-        })
-        .catch((error) => {
-          console.error(error);
-          setMessage(`${error}`);
-          setIsError(true);
-          alert("Update Failed");
-        });
-    } else {
-      const newPerson: NewPhonebookEntry = {
-        name: newName,
-        number: newNumber,
-      };
-
-      personService
-        .create(newPerson)
-        .then((response) => {
-          setPersons((prev) => prev.concat(response.data));
-          setMessage(`${newName} was added to phonebook`);
-          setIsError(false);
-          setTimeout(() => alert(`${newName} added to phonebook.`), 0);
-        })
-        .catch((error) => {
-          console.error("Error object:", error);
-          console.error("Error response:", error.response?.data);
-
-          let errorMessage = "An unexpected error occurred.";
-
-          // First try to extract from response if it's available
-          if (
-            error.response &&
-            error.response.data &&
-            typeof error.response.data.error === "string"
-          ) {
-            errorMessage = error.response.data.error.replace(
-              "Person validation failed: ",
-              ""
-            );
-          } else if (error.message) {
-            // Fallback to error.message if response is undefined
-            const match = error.message.match(/Person validation failed: (.+)/);
-            if (match) {
-              errorMessage = match[1];
-            } else {
-              errorMessage = error.message;
-            }
-          }
-
-          setMessage(errorMessage);
-          setIsError(true);
-        });
-    }
-
-    setNewName("");
-    setNewNumber("");
-  };
-  console.log("Final persons state:", persons);
-  return (
+  const phonebookContent = () => (
     <div>
-      <h2>Phonebook</h2>
-      <Notifications message={message} type={isError ? "error" : "note"} />
+      <p>${user?.name} logged in</p>
+
       <h3>Search Contacts</h3>
       <SearchBox
         onChangeHandler={onSearchChange}
@@ -179,7 +84,153 @@ const App = () => {
         newNumber={newNumber}
       />
     </div>
-  );
-};
+  )
 
-export default App;
+  useEffect(() => {
+    console.log('App mounted')
+
+    return () => {
+      console.log('App unmounted')
+    }
+  }, [])
+
+  const hook = () => {
+    console.log('effect')
+    personService.getAll().then((response) => {
+      console.log('promise fullfilled')
+      console.log('Fetched persons:', response.data)
+      setPersons(response.data)
+    })
+  }
+
+  useEffect(hook, [])
+
+  console.log('render', persons.length, 'notes')
+
+  const filteredPersons = persons.filter((person) =>
+    person.name.toLowerCase().includes(searchField.toLowerCase())
+  )
+
+  const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value)
+    const value = event.target.value
+
+    setNewName(value)
+  }
+
+  const handleNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value)
+    const value = event.target.value
+    setNewNumber(value)
+  }
+
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchFieldString = event.target.value.toLocaleLowerCase()
+    setSearchField(searchFieldString)
+  }
+
+  const handleDelete = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this contact?')) {
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== id))
+          const deletedName =
+            persons.find((p) => p.id === id)?.name ?? 'Unknown'
+          console.log(deletedName)
+          setErrorMessage(`${deletedName} was removed from the phonebook`)
+        })
+        .catch((err) => {
+          console.error(err)
+          alert('Failed to delete contact.')
+        })
+    }
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault()
+
+    const existingPerson = persons.find((p) => p.name === newName)
+
+    if (existingPerson) {
+      console.log(existingPerson)
+      const updatedPerson: Phonebook = {
+        id: existingPerson.id!,
+        name: newName,
+        number: newNumber,
+      }
+      personService
+        .update(existingPerson.id, updatedPerson)
+        .then((response) => {
+          setPersons(
+            persons.map((p) => (p.id === existingPerson.id ? response.data : p))
+          )
+          alert(`${newName} updated sucessfully.`)
+          setErrorMessage(`${newName} was updated`)
+        })
+        .catch((error) => {
+          console.error(error)
+          setErrorMessage(`${error}`)
+          setIsError(true)
+          alert('Update Failed')
+        })
+    } else {
+      const newPerson: NewPhonebookEntry = {
+        name: newName,
+        number: newNumber,
+      }
+
+      personService
+        .create(newPerson)
+        .then((response) => {
+          setPersons((prev) => prev.concat(response.data))
+          setErrorMessage(`${newName} was added to phonebook`)
+          setIsError(false)
+          setTimeout(() => alert(`${newName} added to phonebook.`), 0)
+        })
+        .catch((error) => {
+          console.error('Error object:', error)
+          console.error('Error response:', error.response?.data)
+
+          let errorMessage = 'An unexpected error occurred.'
+
+          // First try to extract from response if it's available
+          if (
+            error.response &&
+            error.response.data &&
+            typeof error.response.data.error === 'string'
+          ) {
+            errorMessage = error.response.data.error.replace(
+              'Person validation failed: ',
+              ''
+            )
+          } else if (error.message) {
+            // Fallback to error.message if response is undefined
+            const match = error.message.match(/Person validation failed: (.+)/)
+            if (match) {
+              errorMessage = match[1]
+            } else {
+              errorMessage = error.message
+            }
+          }
+
+          setErrorMessage(errorMessage)
+          setIsError(true)
+        })
+    }
+
+    setNewName('')
+    setNewNumber('')
+  }
+  console.log('Final persons state:', persons)
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <Notifications message={message} type={isError ? 'error' : 'note'} />
+
+      {user === null ? loginForm() : phonebookContent()}
+    </div>
+  )
+}
+
+export default App
