@@ -10,6 +10,13 @@ import loginService from './services/login'
 
 import personService from './services/personService'
 
+interface User {
+  name: string
+  username: string
+  token: string
+  // add other fields your login response returns
+}
+
 const App = () => {
   const [persons, setPersons] = useState<Phonebook[]>([])
   const [newName, setNewName] = useState('')
@@ -20,7 +27,7 @@ const App = () => {
   const [isError, setIsError] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<User | null>(null)
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -68,7 +75,7 @@ const App = () => {
 
   const phonebookContent = () => (
     <div>
-      <p>${user?.name} logged in</p>
+      <p>{user?.name} logged in</p>
 
       <h3>Search Contacts</h3>
       <SearchBox
