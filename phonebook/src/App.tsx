@@ -101,16 +101,19 @@ const App = () => {
     }
   }, [])
 
-  const hook = () => {
-    console.log('effect')
-    personService.getAll().then((response) => {
-      console.log('promise fullfilled')
-      console.log('Fetched persons:', response.data)
-      setPersons(response.data)
-    })
+useEffect(() => {
+  if (user && user.token) {
+    personService.setToken(user.token)
+    personService.getAll()
+      .then((response) => {
+        console.log('Fetched persons:', response.data)
+        setPersons(response.data)
+      })
+      .catch(error => {
+        console.error('Failed to fetch persons:', error)
+      })
   }
-
-  useEffect(hook, [])
+}, [user])
 
   console.log('render', persons.length, 'notes')
 

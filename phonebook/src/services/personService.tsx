@@ -1,18 +1,22 @@
 import axios from "axios";
 const baseUrl = "https://fullstackopen-server-19ct.onrender.com/api/persons";
+let token: string | null = null;
+
+const setToken = (newToken: string) => {
+  token = `Bearer ${newToken}`
+}
+
 import { PersonService } from "../types/personserviceprops";
 import { NewPhonebookEntry, Phonebook } from "../types/phonebook";
 
-const getAll: PersonService["getAll"] = () => {
-  return axios.get(baseUrl);
-};
+const getAll: PersonService["getAll"] = async () => {
 
-// const create: PersonService["create"] = (newObject) => {
-//   return axios.post(baseUrl, newObject);
-// };
-// const create = (newObject: NewPhonebookEntry) => {
-//   return axios.post<Phonebook>(baseUrl, newObject);
-// };
+  const config = {
+    headers: { Authorization: token}
+  }
+  const response = await axios.get(baseUrl, config)
+  return response
+};
 
 const create: PersonService["create"] = async (
   newObject: NewPhonebookEntry
@@ -47,6 +51,7 @@ const personService: PersonService = {
   create,
   update,
   remove,
+  setToken
 };
 
 export default personService;

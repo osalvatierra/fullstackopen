@@ -53,41 +53,47 @@ personRouter.post('/', async (request, response, next) => {
   }
 })
 
-personRouter.get('/', (request, response) => {
-  Person.find({}).then((persons) => {
-    response.json(persons)
-  })
-})
+
+// FIXED: GET all persons - only for logged-in user
 personRouter.get('/', async (request, response) => {
   try {
-    const count = await Person.countDocuments({})
-    const localDateTime = new Date()
-    console.log(localDateTime.toString())
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
 
-    const message = `Phonebook has info for ${count} people. <br/><br/>${localDateTime}`
-    response.send(message)
+    // Only find persons that belong to this user
+    const persons = await Person.find({ user: decodedToken.id })
+    response.json(persons)
   } catch (error) {
-    response.status(500).send(`Error retrieving data from database: ${error}`)
+    console.error('Get persons error:', error)
+    response.status(401).json({ error: 'token invalid' })
   }
 })
 
-personRouter.get('/:id', (request, response) => {
-  const id = request.params.id
+// FIXED: GET single person - only if it belongs to current user
+personRouter.get('/:id', async (request, response) => {
+  try {
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
 
-  Person.findById(id)
-    .then((person) => {
-      if (person) {
-        response.json(person)
-      } else {
-        response.status(404).end()
-      }
+    const person = await Person.findOne({ 
+      _id: request.params.id, 
+      user: decodedToken.id  // Only find if it belongs to this user
     })
-    .catch((error) => {
-      console.log(error)
-      response.status(400).send({ error: 'malformatted id' })
-    }) // Handles invalid ObjectId format errors
-})
 
+    if (person) {
+      response.json(person)
+    } else {
+      response.status(404).json({ error: 'person not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    response.status(400).json({ error: 'malformatted id' })
+  }
+})
 personRouter.put('/:id', (request, response, next) => {
   const { name, number } = request.body
 
