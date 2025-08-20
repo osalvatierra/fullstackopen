@@ -9,4 +9,5 @@ export type PersonService = {
   create: (newObject: NewPhonebookEntry) => Promise<AxiosResponse<Phonebook>>;
   update: (id: string, newObject: Phonebook) => PhonebookItemResponse;
   remove: (id: string) => PhonebookItemResponse;
+  setToken: (newToken: string) => void;
 };

@@ -37,6 +37,8 @@ const App = () => {
         username,
         password,
       })
+
+      personService.setToken(loginResponse.token)
       setUser(loginResponse)
       setUsername('')
       setPassword('')
