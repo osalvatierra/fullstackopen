@@ -5,7 +5,7 @@ import User from '../models/users.js'
 
 const personRouter = express.Router()
 
-const getTokenFrom = request => {
+const getTokenFrom = (request) => {
   const authorization = request.get('authorization')
   if (authorization && authorization.startsWith('Bearer ')) {
     return authorization.replace('Bearer ', '')
@@ -53,7 +53,6 @@ personRouter.post('/', async (request, response, next) => {
   }
 })
 
-
 // FIXED: GET all persons - only for logged-in user
 personRouter.get('/', async (request, response) => {
   try {
@@ -79,9 +78,9 @@ personRouter.get('/:id', async (request, response) => {
       return response.status(401).json({ error: 'token invalid' })
     }
 
-    const person = await Person.findOne({ 
-      _id: request.params.id, 
-      user: decodedToken.id  // Only find if it belongs to this user
+    const person = await Person.findOne({
+      _id: request.params.id,
+      user: decodedToken.id, // Only find if it belongs to this user
     })
 
     if (person) {

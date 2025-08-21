@@ -7,8 +7,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 const PORT = process.env.PORT
 const MONGODB_URI = process.env.MONGODB_URI
+const SECRET = process.env.SECRET
 
 console.log(`Server running on port ${PORT}`)
 console.log(`MONGODB_URI is: ${MONGODB_URI}`)
 
-export default { MONGODB_URI, PORT }
+export default { MONGODB_URI, PORT, SECRET }
