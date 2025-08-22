@@ -103,19 +103,20 @@ const App = () => {
     }
   }, [])
 
-useEffect(() => {
-  if (user && user.token) {
-    personService.setToken(user.token)
-    personService.getAll()
-      .then((response) => {
-        console.log('Fetched persons:', response.data)
-        setPersons(response.data)
-      })
-      .catch(error => {
-        console.error('Failed to fetch persons:', error)
-      })
-  }
-}, [user])
+  useEffect(() => {
+    if (user && user.token) {
+      personService.setToken(user.token)
+      personService
+        .getAll()
+        .then((response) => {
+          console.log('Fetched persons:', response)
+          setPersons(response)
+        })
+        .catch((error) => {
+          console.error('Failed to fetch persons:', error)
+        })
+    }
+  }, [user])
 
   console.log('render', persons.length, 'notes')
 

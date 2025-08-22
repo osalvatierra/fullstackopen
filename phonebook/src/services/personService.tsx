@@ -1,57 +1,56 @@
-import axios from "axios";
-const baseUrl = "https://fullstackopen-server-19ct.onrender.com/api/persons";
-let token: string | null = null;
+import axios from 'axios'
+const baseUrl = 'https://fullstackopen-server-19ct.onrender.com/api/persons'
+let token: string | null = null
 
 const setToken = (newToken: string) => {
   token = `Bearer ${newToken}`
 }
 
-import { PersonService } from "../types/personserviceprops";
-import { NewPhonebookEntry, Phonebook } from "../types/phonebook";
+import { PersonService, PhonebookResponse } from '../types/personserviceprops'
+import { NewPhonebookEntry, Phonebook } from '../types/phonebook'
 
-const getAll: PersonService["getAll"] = async () => {
-
+const getAll = async (): PhonebookResponse => {
   const config = {
-    headers: { Authorization: token}
+    headers: { Authorization: token },
   }
   const response = await axios.get(baseUrl, config)
-  return response
-};
+  return response.data
+}
 
-const create: PersonService["create"] = async (
+const create: PersonService['create'] = async (
   newObject: NewPhonebookEntry
 ) => {
   try {
-    const response = await axios.post<Phonebook>(baseUrl, newObject);
-    return response;
+    const response = await axios.post<Phonebook>(baseUrl, newObject)
+    return response
   } catch (error) {
     if (
       axios.isAxiosError(error) &&
       error.response &&
       error.response.data &&
-      typeof error.response.data.error === "string"
+      typeof error.response.data.error === 'string'
     ) {
-      throw new Error(error.response.data.error);
+      throw new Error(error.response.data.error)
     } else {
-      throw error;
+      throw error
     }
   }
-};
+}
 
-const update: PersonService["update"] = (id: string, newObject) => {
-  return axios.put(`${baseUrl}/${id}`, newObject);
-};
+const update: PersonService['update'] = (id: string, newObject) => {
+  return axios.put(`${baseUrl}/${id}`, newObject)
+}
 
-const remove: PersonService["remove"] = (id) => {
-  return axios.delete(`${baseUrl}/${id}`);
-};
+const remove: PersonService['remove'] = (id) => {
+  return axios.delete(`${baseUrl}/${id}`)
+}
 
 const personService: PersonService = {
   getAll,
   create,
   update,
   remove,
-  setToken
-};
+  setToken,
+}
 
-export default personService;
+export default personService
