@@ -1,15 +1,25 @@
 import axios from 'axios'
+
 const baseUrl = 'https://fullstackopen-server-19ct.onrender.com/api/persons'
+
+interface Person {
+  id: string
+  name: string
+  number: string
+}
+
+interface NewPerson {
+  name: string
+  number: string
+}
+
 let token: string | null = null
 
 const setToken = (newToken: string) => {
   token = `Bearer ${newToken}`
 }
 
-import { PersonService, PhonebookResponse } from '../types/personserviceprops'
-import { NewPhonebookEntry, Phonebook } from '../types/phonebook'
-
-const getAll = async (): PhonebookResponse => {
+const getAll = async (): Promise<Person[]> => {
   const config = {
     headers: { Authorization: token },
   }
@@ -17,40 +27,33 @@ const getAll = async (): PhonebookResponse => {
   return response.data
 }
 
-const create: PersonService['create'] = async (
-  newObject: NewPhonebookEntry
-) => {
-  try {
-    const response = await axios.post<Phonebook>(baseUrl, newObject)
-    return response
-  } catch (error) {
-    if (
-      axios.isAxiosError(error) &&
-      error.response &&
-      error.response.data &&
-      typeof error.response.data.error === 'string'
-    ) {
-      throw new Error(error.response.data.error)
-    } else {
-      throw error
-    }
+const create = async (newObject: NewPerson): Promise<Person> => {
+  const config = {
+    headers: { Authorization: token },
   }
+  const response = await axios.post(baseUrl, newObject, config)
+  return response.data
 }
 
-const update: PersonService['update'] = (id: string, newObject) => {
-  return axios.put(`${baseUrl}/${id}`, newObject)
+const update = async (id: string, newObject: NewPerson): Promise<Person> => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const response = await axios.put(`${baseUrl}/${id}`, newObject, config)
+  return response.data
 }
 
-const remove: PersonService['remove'] = (id) => {
-  return axios.delete(`${baseUrl}/${id}`)
+const remove = async (id: string): Promise<void> => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  await axios.delete(`${baseUrl}/${id}`, config)
 }
 
-const personService: PersonService = {
+export default {
   getAll,
   create,
   update,
   remove,
   setToken,
 }
-
-export default personService
