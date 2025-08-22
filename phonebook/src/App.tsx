@@ -176,7 +176,7 @@ const App = () => {
         .update(existingPerson.id, updatedPerson)
         .then((response) => {
           setPersons(
-            persons.map((p) => (p.id === existingPerson.id ? response.data : p))
+            persons.map((p) => (p.id === existingPerson.id ? response : p))
           )
           alert(`${newName} updated sucessfully.`)
           setErrorMessage(`${newName} was updated`)
@@ -196,7 +196,7 @@ const App = () => {
       personService
         .create(newPerson)
         .then((response) => {
-          setPersons((prev) => prev.concat(response.data))
+          setPersons((prev) => prev.concat(response))
           setErrorMessage(`${newName} was added to phonebook`)
           setIsError(false)
           setTimeout(() => alert(`${newName} added to phonebook.`), 0)
