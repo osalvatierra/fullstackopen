@@ -5,6 +5,7 @@ import { Phonebook, NewPhonebookEntry } from './types/phonebook'
 import PersonForm from './components/PersonForm'
 import SearchBox from './components/SearchBox'
 import SearchList from './components/SearchList'
+import LoginForm from './components/Login'
 import Notifications from './components/notifications'
 import loginService from './services/login'
 
@@ -18,6 +19,7 @@ interface User {
 }
 
 const App = () => {
+  const [loginVisible, setLoginVisible] = useState(false)
   const [persons, setPersons] = useState<Phonebook[]>([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState<string>('')
@@ -51,29 +53,28 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
       <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  )
+    )
+  }
 
   const phonebookContent = () => (
     <div>
@@ -96,14 +97,6 @@ const App = () => {
   )
 
   useEffect(() => {
-    console.log('App mounted')
-
-    return () => {
-      console.log('App unmounted')
-    }
-  }, [])
-
-  useEffect(() => {
     if (user && user.token) {
       personService.setToken(user.token)
       personService
@@ -117,8 +110,6 @@ const App = () => {
         })
     }
   }, [user])
-
-  console.log('render', persons.length, 'notes')
 
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(searchField.toLowerCase())
