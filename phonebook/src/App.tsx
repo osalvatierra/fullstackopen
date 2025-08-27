@@ -21,10 +21,9 @@ interface User {
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
   const [persons, setPersons] = useState<Phonebook[]>([])
+  const [searchField, setSearchField] = useState('') // ← Add this line
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState<string>('')
-
-  const [searchField, setSearchField] = useState('')
   const [message, setErrorMessage] = useState<string | null>(null)
   const [isError, setIsError] = useState(false)
   const [username, setUsername] = useState('')
@@ -82,14 +81,12 @@ const App = () => {
 
       <h3>Search Contacts</h3>
       <SearchBox
-        onChangeHandler={onSearchChange}
+        onSearch={(searchTerm) => setSearchField(searchTerm)}
         placeholder="search contacts"
       />
       <SearchList persons={filteredPersons} handleDelete={handleDelete} />
       <PersonForm
         handleSubmit={handleSubmit}
-        handleName={handleName}
-        handleNumber={handleNumber}
         newName={newName}
         newNumber={newNumber}
       />
@@ -114,24 +111,6 @@ const App = () => {
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(searchField.toLowerCase())
   )
-
-  const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
-    const value = event.target.value
-
-    setNewName(value)
-  }
-
-  const handleNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
-    const value = event.target.value
-    setNewNumber(value)
-  }
-
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const searchFieldString = event.target.value.toLocaleLowerCase()
-    setSearchField(searchFieldString)
-  }
 
   const handleDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this contact?')) {
