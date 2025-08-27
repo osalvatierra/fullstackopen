@@ -18,8 +18,13 @@ const PersonForm = ({ handleSubmit }: formProps) => {
     setNewNumber(value)
   }
 
+  const onSubmit = (event) => {
+    event.preventDefault()
+    handleSubmit({ name: newName, number: newNumber })
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={onSubmit}>
       <div>
         name:
         <input
