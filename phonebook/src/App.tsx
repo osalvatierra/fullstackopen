@@ -5,10 +5,11 @@ import { Phonebook, NewPhonebookEntry } from './types/phonebook'
 import PersonForm from './components/PersonForm'
 import SearchBox from './components/SearchBox'
 import SearchList from './components/SearchList'
+import RegisterForm from './components/register'
 import LoginForm from './components/Login'
 import Notifications from './components/notifications'
 import loginService from './services/login'
-
+import registerService from './services/register'
 import personService from './services/personService'
 
 interface User {
@@ -20,15 +21,21 @@ interface User {
 
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
+  const [registerVisible, setRegisterVisible] = useState(false)
   const [persons, setPersons] = useState<Phonebook[]>([])
-  const [searchField, setSearchField] = useState('') // ← Add this line
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState<string>('')
-  const [message, setErrorMessage] = useState<string | null>(null)
+  const [searchField, setSearchField] = useState('')
+  const [message, setMessage] = useState<string | null>(null) // Fixed: renamed from setErrorMessage
   const [isError, setIsError] = useState(false)
+
+  // Login State
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState<User | null>(null)
+
+  // Register State
+  const [registerName, setRegisterName] = useState('')
+  const [registerEmail, setRegisterEmail] = useState('')
+  const [registerPassword, setRegisterPassword] = useState('')
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -45,9 +52,11 @@ const App = () => {
       setPassword('')
     } catch (exception: unknown) {
       console.error('Login failed:', exception)
-      setErrorMessage('Wrong credentials')
+      setMessage('Wrong credentials') // Fixed: use setMessage
+      setIsError(true) // Fixed: set error state
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null) // Fixed: use setMessage
+        setIsError(false) // Fixed: reset error state
       }, 5000)
     }
   }
@@ -75,6 +84,81 @@ const App = () => {
     )
   }
 
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      const result = await registerService.register({
+        name: registerName,
+        email: registerEmail,
+        password: registerPassword,
+      })
+
+      if (result.status === 'ok') {
+        setMessage('Registration successful! Please log in.')
+        setIsError(false)
+        setRegisterName('')
+        setRegisterEmail('')
+        setRegisterPassword('')
+        setRegisterVisible(false)
+        setLoginVisible(true)
+
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      } else {
+        setMessage(result.error || 'Registration failed')
+        setIsError(true)
+        setTimeout(() => {
+          setMessage(null)
+          setIsError(false)
+        }, 5000)
+      }
+    } catch (error: any) {
+      console.error('Registration error:', error)
+      setMessage(error.response?.data?.error || 'Registration failed')
+      setIsError(true)
+      setTimeout(() => {
+        setMessage(null)
+        setIsError(false)
+      }, 5000)
+    }
+  }
+
+  const registerForm = () => {
+    const hideWhenVisible = { display: registerVisible ? 'none' : '' }
+    const showWhenVisible = { display: registerVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setRegisterVisible(true)}>register</button>
+        </div>
+        <div style={showWhenVisible}>
+          <RegisterForm
+            name={registerName}
+            email={registerEmail}
+            password={registerPassword}
+            handleNameChange={({ target }) => setRegisterName(target.value)}
+            handleEmailChange={({ target }) => setRegisterEmail(target.value)}
+            handlePasswordChange={({ target }) =>
+              setRegisterPassword(target.value)
+            }
+            handleSubmit={handleRegister}
+          />
+          <button onClick={() => setRegisterVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+
+  const authForms = () => (
+    <div>
+      {loginForm()}
+      {registerForm()}
+    </div>
+  )
+
   const phonebookContent = () => (
     <div>
       <p>{user?.name} logged in</p>
@@ -85,11 +169,7 @@ const App = () => {
         placeholder="search contacts"
       />
       <SearchList persons={filteredPersons} handleDelete={handleDelete} />
-      <PersonForm
-        handleSubmit={handleSubmit}
-        newName={newName}
-        newNumber={newNumber}
-      />
+      <PersonForm handleSubmit={handleSubmit} />
     </div>
   )
 
@@ -121,26 +201,28 @@ const App = () => {
           const deletedName =
             persons.find((p) => p.id === id)?.name ?? 'Unknown'
           console.log(deletedName)
-          setErrorMessage(`${deletedName} was removed from the phonebook`)
+          setMessage(`${deletedName} was removed from the phonebook`) // Fixed: use setMessage
+          setIsError(false) // Fixed: set as success message
         })
         .catch((err) => {
           console.error(err)
-          alert('Failed to delete contact.')
+          setMessage('Failed to delete contact.') // Fixed: use setMessage instead of alert
+          setIsError(true) // Fixed: set error state
         })
     }
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event?.preventDefault()
+  const handleSubmit = (data: { name: string; number: string }) => {
+    const { name, number } = data
 
-    const existingPerson = persons.find((p) => p.name === newName)
+    const existingPerson = persons.find((p) => p.name === name)
 
     if (existingPerson) {
       console.log(existingPerson)
       const updatedPerson: Phonebook = {
         id: existingPerson.id!,
-        name: newName,
-        number: newNumber,
+        name: name,
+        number: number,
       }
       personService
         .update(existingPerson.id, updatedPerson)
@@ -148,28 +230,26 @@ const App = () => {
           setPersons(
             persons.map((p) => (p.id === existingPerson.id ? response : p))
           )
-          alert(`${newName} updated sucessfully.`)
-          setErrorMessage(`${newName} was updated`)
+          setMessage(`${name} was updated`) // Fixed: use setMessage
+          setIsError(false) // Fixed: set as success message
         })
         .catch((error) => {
           console.error(error)
-          setErrorMessage(`${error}`)
+          setMessage(`Failed to update ${name}`) // Fixed: cleaner error message
           setIsError(true)
-          alert('Update Failed')
         })
     } else {
       const newPerson: NewPhonebookEntry = {
-        name: newName,
-        number: newNumber,
+        name: name,
+        number: number,
       }
 
       personService
         .create(newPerson)
         .then((response) => {
           setPersons((prev) => prev.concat(response))
-          setErrorMessage(`${newName} was added to phonebook`)
+          setMessage(`${name} was added to phonebook`) // Fixed: use setMessage
           setIsError(false)
-          setTimeout(() => alert(`${newName} added to phonebook.`), 0)
         })
         .catch((error) => {
           console.error('Error object:', error)
@@ -197,21 +277,19 @@ const App = () => {
             }
           }
 
-          setErrorMessage(errorMessage)
+          setMessage(errorMessage) // Fixed: use setMessage
           setIsError(true)
         })
     }
-
-    setNewName('')
-    setNewNumber('')
   }
+
   console.log('Final persons state:', persons)
   return (
     <div>
       <h2>Phonebook</h2>
       <Notifications message={message} type={isError ? 'error' : 'note'} />
 
-      {user === null ? loginForm() : phonebookContent()}
+      {user === null ? authForms() : phonebookContent()}
     </div>
   )
 }
