@@ -6,7 +6,7 @@ import middleware from './util/middleware.js'
 import personRouter from './controllers/persons.js'
 import usersRouter from './controllers/users.js'
 import loginRouter from './controllers/login.js'
-import registerRouter from '../controllers/register.js'
+import registerRouter from './controllers/register.js'
 
 import cors from 'cors'
 
