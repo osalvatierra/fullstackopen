@@ -15,7 +15,7 @@ registerRouter.post('/', async (req, res) => {
     // Create the new user
     const newUser = await User.create({
       name: req.body.name,
-      email: req.body.email,
+      username: req.body.email,
       password: newPassword,
     })
 
