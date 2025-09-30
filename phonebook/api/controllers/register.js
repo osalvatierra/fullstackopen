@@ -5,17 +5,34 @@ import User from '../models/users.js'
 const registerRouter = express.Router()
 
 registerRouter.post('/', async (req, res) => {
-  console.log(req.body)
+  console.log('Register request body:', req.body)
 
   try {
+    // Validate required fields
+    const { name, email, password } = req.body
+
+    if (!name || !email || !password) {
+      return res.json({
+        status: 'error',
+        error: 'Name, email, and password are required',
+      })
+    }
+
+    if (password.length < 6) {
+      return res.json({
+        status: 'error',
+        error: 'Password must be at least 6 characters',
+      })
+    }
+
     // Hash the password
     const saltRounds = 10
-    const newPassword = await bcrypt.hash(req.body.password, saltRounds)
+    const newPassword = await bcrypt.hash(password, saltRounds)
 
     // Create the new user
     const newUser = await User.create({
-      name: req.body.name,
-      username: req.body.email,
+      name,
+      username: email, // Using email as username
       password: newPassword,
     })
 
