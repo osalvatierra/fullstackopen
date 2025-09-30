@@ -87,6 +87,12 @@ const App = () => {
   const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
+    console.log('Register state values:', {
+      registerName,
+      registerEmail,
+      registerPassword,
+    })
+
     try {
       const result = await registerService.register({
         name: registerName,
