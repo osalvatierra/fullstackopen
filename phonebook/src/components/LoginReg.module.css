@@ -1,0 +1,26 @@
+.header {
+  color: #ffffff;
+}
+
+.login {
+  margin: 2.5rem;
+  padding: 2.5rem 5rem;
+  background-color: #2d3439;
+}
+
+.form {
+  background-color: #b1b1b1;
+  border-radius: 7px;
+  padding: 2rem 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: auto;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

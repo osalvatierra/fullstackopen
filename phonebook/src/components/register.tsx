@@ -1,4 +1,5 @@
 import React from 'react'
+import styles from './LoginReg.module.css'
 
 interface RegisterFormProps {
   name: string
@@ -20,41 +21,45 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   handleSubmit,
 }) => {
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="name">Name</label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={handleNameChange}
-          required
-          minLength={3}
-        />
-      </div>
-      <div>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={handleEmailChange}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={handlePasswordChange}
-          required
-          minLength={6}
-        />
-      </div>
-      <button type="submit">Register</button>
-    </form>
+    <main className={styles.login}>
+      <h2 className={styles.header}>Register</h2>
+
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <div className={styles.row}>
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={handleNameChange}
+            required
+            minLength={3}
+          />
+        </div>
+        <div className={styles.row}>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={handleEmailChange}
+            required
+          />
+        </div>
+        <div className={styles.row}>
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={handlePasswordChange}
+            required
+            minLength={6}
+          />
+        </div>
+        <button type="submit">Register</button>
+      </form>
+    </main>
   )
 }
 

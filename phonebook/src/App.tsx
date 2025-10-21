@@ -1,4 +1,6 @@
 import React from 'react'
+import styles from './App.module.css'
+
 import { useState, useEffect } from 'react'
 import { Phonebook, NewPhonebookEntry } from './types/phonebook'
 
@@ -68,7 +70,12 @@ const App = () => {
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
+          <button
+            className={styles.buttonsLogReg}
+            onClick={() => setLoginVisible(true)}
+          >
+            Login
+          </button>
         </div>
         <div style={showWhenVisible}>
           <LoginForm
@@ -138,7 +145,12 @@ const App = () => {
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={() => setRegisterVisible(true)}>register</button>
+          <button
+            className={styles.buttonsLogReg}
+            onClick={() => setRegisterVisible(true)}
+          >
+            register
+          </button>
         </div>
         <div style={showWhenVisible}>
           <RegisterForm
@@ -159,7 +171,7 @@ const App = () => {
   }
 
   const authForms = () => (
-    <div>
+    <div className={styles.LogRegButtons}>
       {loginForm()}
       {registerForm()}
     </div>
@@ -291,12 +303,12 @@ const App = () => {
 
   console.log('Final persons state:', persons)
   return (
-    <div>
-      <h2>Phonebook</h2>
+    <main className={styles.homemain}>
+      <h2 className={styles.headerPhone}>Phonebook</h2>
       <Notifications message={message} type={isError ? 'error' : 'note'} />
 
       {user === null ? authForms() : phonebookContent()}
-    </div>
+    </main>
   )
 }
 

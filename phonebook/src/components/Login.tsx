@@ -1,4 +1,5 @@
 import { loginProps } from '../types/loginprops'
+import styles from './LoginReg.module.css'
 
 const LoginForm = ({
   handleSubmit,
@@ -8,25 +9,27 @@ const LoginForm = ({
   password,
 }: loginProps) => {
   return (
-    <div>
-      <h2>Login</h2>
+    <main className={styles.login}>
+      <div>
+        <h2 className={styles.header}>Login</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          username
-          <input value={username} onChange={handleUsernameChange} />
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.row}>
+            username
+            <input value={username} onChange={handleUsernameChange} />
+          </div>
+          <div className={styles.row}>
+            password
+            <input
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <button type="submit">login</button>
+        </form>
+      </div>
+    </main>
   )
 }
 

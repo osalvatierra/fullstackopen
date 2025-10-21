@@ -1,0 +1,26 @@
+.headerPhone {
+  display: flex;
+  justify-content: center;
+}
+
+.LogRegButtons {
+  display: flex;
+  justify-content: center;
+}
+
+.buttonsLogReg {
+  background-color: #567bff;
+  color: #ffffff;
+  padding: 0.8rem 3rem;
+  border-radius: 7px;
+  margin: 0 1rem 0 0;
+}
+
+.homemain {
+  height: calc(100vh - 5rem);
+  margin: 2.5rem;
+  background-size: cover;
+  background-position: center;
+  padding: 2.5rem 5rem;
+  background-image: url(./img/phonebg.jpg);
+}
