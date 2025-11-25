@@ -110,6 +110,7 @@ const App = () => {
       const result = await registerService.register({
         name: registerName,
         email: registerEmail,
+        address: registerAddress,
         password: registerPassword,
       })
 
