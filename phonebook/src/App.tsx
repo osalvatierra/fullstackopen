@@ -37,6 +37,7 @@ const App = () => {
   // Register State
   const [registerName, setRegisterName] = useState('')
   const [registerEmail, setRegisterEmail] = useState('')
+  const [registerAddress, setRegisterAddress] = useState('')
   const [registerPassword, setRegisterPassword] = useState('')
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -47,6 +48,10 @@ const App = () => {
         username,
         password,
       })
+
+      console.log('Full login response:', loginResponse) // ← Add this
+      console.log('Name field:', loginResponse.name) // ← Add this
+      console.log('Username field:', loginResponse.username) // ← Add this
 
       personService.setToken(loginResponse.token)
       setUser(loginResponse)
@@ -97,6 +102,7 @@ const App = () => {
     console.log('Register state values:', {
       registerName,
       registerEmail,
+      registerAddress,
       registerPassword,
     })
 
@@ -156,9 +162,13 @@ const App = () => {
           <RegisterForm
             name={registerName}
             email={registerEmail}
+            address={registerAddress}
             password={registerPassword}
             handleNameChange={({ target }) => setRegisterName(target.value)}
             handleEmailChange={({ target }) => setRegisterEmail(target.value)}
+            handleAddressChange={({ target }) =>
+              setRegisterAddress(target.value)
+            }
             handlePasswordChange={({ target }) =>
               setRegisterPassword(target.value)
             }
@@ -179,15 +189,18 @@ const App = () => {
 
   const phonebookContent = () => (
     <div>
-      <p>{user?.name} logged in</p>
+      <div>
+        <p>{user?.username} logged in</p>
+        <h3>Search Contacts</h3>
+        <SearchBox
+          onSearch={(searchTerm) => setSearchField(searchTerm)}
+          placeholder="search contacts"
+        />
+        <SearchList persons={filteredPersons} handleDelete={handleDelete} />
+        <PersonForm handleSubmit={handleSubmit} />
+      </div>
 
-      <h3>Search Contacts</h3>
-      <SearchBox
-        onSearch={(searchTerm) => setSearchField(searchTerm)}
-        placeholder="search contacts"
-      />
-      <SearchList persons={filteredPersons} handleDelete={handleDelete} />
-      <PersonForm handleSubmit={handleSubmit} />
+      <h3>Welcome {user?.name} </h3>
     </div>
   )
 
@@ -205,6 +218,8 @@ const App = () => {
         })
     }
   }, [user])
+
+  const loggedInContent = () => <div>{phonebookContent()}</div>
 
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(searchField.toLowerCase())
@@ -307,7 +322,7 @@ const App = () => {
       <h2 className={styles.headerPhone}>Phonebook</h2>
       <Notifications message={message} type={isError ? 'error' : 'note'} />
 
-      {user === null ? authForms() : phonebookContent()}
+      {user === null ? authForms() : loggedInContent()}
     </main>
   )
 }

@@ -6,12 +6,13 @@ const registerRouter = express.Router()
 
 registerRouter.post('/', async (req, res) => {
   console.log('Register request body:', req.body)
+  console.log('Name field specifically:', req.body.name) // ← Add this line
 
   try {
     // Validate required fields
-    const { name, email, password } = req.body
+    const { name, email, address, password } = req.body
 
-    if (!name || !email || !password) {
+    if (!name || !email || !address || !password) {
       console.log('Validation failed: missing fields')
       return res.json({
         status: 'error',
@@ -37,6 +38,7 @@ registerRouter.post('/', async (req, res) => {
     const newUser = await User.create({
       name,
       username: email, // Using email as username
+      address,
       passwordHash: newPassword,
     })
 
