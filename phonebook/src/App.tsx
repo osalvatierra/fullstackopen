@@ -18,7 +18,7 @@ interface User {
   name: string
   username: string
   token: string
-  // add other fields your login response returns
+  address?: string
 }
 
 const App = () => {
@@ -49,9 +49,7 @@ const App = () => {
         password,
       })
 
-      console.log('Full login response:', loginResponse) // ← Add this
-      console.log('Name field:', loginResponse.name) // ← Add this
-      console.log('Username field:', loginResponse.username) // ← Add this
+      console.log('Login response:', loginResponse) // ← Add this to see what you're getting back
 
       personService.setToken(loginResponse.token)
       setUser(loginResponse)
@@ -119,6 +117,7 @@ const App = () => {
         setIsError(false)
         setRegisterName('')
         setRegisterEmail('')
+        setRegisterAddress('')
         setRegisterPassword('')
         setRegisterVisible(false)
         setLoginVisible(true)
@@ -189,7 +188,7 @@ const App = () => {
   )
 
   const phonebookContent = () => (
-    <div>
+    <div className={styles.content}>
       <div>
         <p>{user?.username} logged in</p>
         <h3>Search Contacts</h3>
@@ -200,8 +199,14 @@ const App = () => {
         <SearchList persons={filteredPersons} handleDelete={handleDelete} />
         <PersonForm handleSubmit={handleSubmit} />
       </div>
-
-      <h3>Welcome {user?.name} </h3>
+      <div>
+        <h3>Welcome {user?.name} </h3>
+        <h3>
+          Address
+          <br />
+          {user?.address}
+        </h3>
+      </div>
     </div>
   )
 

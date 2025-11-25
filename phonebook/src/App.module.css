@@ -24,3 +24,7 @@
   padding: 2.5rem 5rem;
   background-image: url(./img/phonebg.jpg);
 }
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
