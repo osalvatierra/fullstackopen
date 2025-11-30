@@ -3,6 +3,7 @@ import { Phonebook } from "../types/phonebook";
 type SearchListProps = {
   persons: Phonebook[];
   handleDelete: (id: string) => void;
+  handleEdit: (person: Phonebook) => void;
 };
 
 const SearchList = ({ persons, handleDelete }: SearchListProps) => {
@@ -12,6 +13,9 @@ const SearchList = ({ persons, handleDelete }: SearchListProps) => {
         {persons.map((person) => (
           <li key={person.id}>
             {person.name} — {person.number}{" "}
+            <button type="button" onClick={() => handleDelete(person.id)}>
+              Delete
+            </button>
             <button type="button" onClick={() => handleDelete(person.id)}>
               Delete
             </button>

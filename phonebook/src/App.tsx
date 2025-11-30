@@ -24,7 +24,10 @@ interface User {
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
   const [registerVisible, setRegisterVisible] = useState(false)
+  
   const [persons, setPersons] = useState<Phonebook[]>([])
+  const [editingPerson, setEditingPerson] = useState<Phonebook | null>(null)
+
   const [searchField, setSearchField] = useState('')
   const [message, setMessage] = useState<string | null>(null) // Fixed: renamed from setErrorMessage
   const [isError, setIsError] = useState(false)
@@ -196,7 +199,7 @@ const App = () => {
           onSearch={(searchTerm) => setSearchField(searchTerm)}
           placeholder="search contacts"
         />
-        <SearchList persons={filteredPersons} handleDelete={handleDelete} />
+        <SearchList persons={filteredPersons} handleDelete={handleDelete} handleEdit={handleEdit} />
         <PersonForm handleSubmit={handleSubmit} />
       </div>
       <div>
@@ -249,6 +252,38 @@ const App = () => {
           setIsError(true) // Fixed: set error state
         })
     }
+  }
+
+  const handleEdit = (person: Phonebook) => {
+    setEditingPerson(person)
+  }
+
+  const handleUpdate = (updatedData: {name: string; number: string}) => {
+    if (!editingPerson) return
+
+    const updatedPerson: Phonebook = {
+      id: editingPerson.id,
+      name: updatedData.name,
+      number: updatedData.number,
+    }
+
+    personService
+      .update(editingPerson.id, updatedPerson)
+      .then((response) => {
+        setPersons(persons.map((p) => (p.id === editingPerson.id ? response : p)))
+        setMessage(`${updatedData.name} was updated`)
+        setIsError(false)
+        setEditingPerson(null)
+      })
+      .catch((error) => {
+        console.error(error)
+        setMessage(`Failed to update contact`)
+        setIsError(true)
+      })
+  }
+
+  const handleCancelEdit = () => {
+    setEditingPerson(null)
   }
 
   const handleSubmit = (data: { name: string; number: string }) => {
