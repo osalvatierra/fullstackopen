@@ -10,6 +10,8 @@ import SearchList from './components/SearchList'
 import RegisterForm from './components/register'
 import LoginForm from './components/Login'
 import Notifications from './components/notifications'
+import EditPersonForm from './components/EditPersonForm'
+
 import loginService from './services/login'
 import registerService from './services/register'
 import personService from './services/personService'
@@ -24,7 +26,7 @@ interface User {
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
   const [registerVisible, setRegisterVisible] = useState(false)
-  
+
   const [persons, setPersons] = useState<Phonebook[]>([])
   const [editingPerson, setEditingPerson] = useState<Phonebook | null>(null)
 
@@ -199,7 +201,11 @@ const App = () => {
           onSearch={(searchTerm) => setSearchField(searchTerm)}
           placeholder="search contacts"
         />
-        <SearchList persons={filteredPersons} handleDelete={handleDelete} handleEdit={handleEdit} />
+        <SearchList
+          persons={filteredPersons}
+          handleDelete={handleDelete}
+          handleEdit={handleEdit}
+        />
         <PersonForm handleSubmit={handleSubmit} />
       </div>
       <div>
@@ -210,6 +216,14 @@ const App = () => {
           {user?.address}
         </h3>
       </div>
+
+      {editingPerson && (
+        <EditPersonForm
+          person={editingPerson}
+          onSubmit={handleUpdate}
+          onCancel={handleCancelEdit}
+        />
+      )}
     </div>
   )
 
@@ -258,7 +272,7 @@ const App = () => {
     setEditingPerson(person)
   }
 
-  const handleUpdate = (updatedData: {name: string; number: string}) => {
+  const handleUpdate = (updatedData: { name: string; number: string }) => {
     if (!editingPerson) return
 
     const updatedPerson: Phonebook = {
@@ -270,7 +284,9 @@ const App = () => {
     personService
       .update(editingPerson.id, updatedPerson)
       .then((response) => {
-        setPersons(persons.map((p) => (p.id === editingPerson.id ? response : p)))
+        setPersons(
+          persons.map((p) => (p.id === editingPerson.id ? response : p))
+        )
         setMessage(`${updatedData.name} was updated`)
         setIsError(false)
         setEditingPerson(null)
