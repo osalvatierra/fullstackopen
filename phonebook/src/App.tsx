@@ -71,6 +71,17 @@ const App = () => {
     }
   }
 
+  const handleLogout = () => {
+    setUser(null)
+    personService.setToken('')
+    setPersons([])
+    setMessage('Logged our successfully')
+    setIsError(false)
+    setTimeout(() => {
+      setMessage(null)
+    }, 3000)
+  }
+
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
     const showWhenVisible = { display: loginVisible ? '' : 'none' }
@@ -196,6 +207,8 @@ const App = () => {
     <div className={styles.content}>
       <div>
         <p>{user?.username} logged in</p>
+        <button onClick={handleLogout}>Logout</button>
+
         <h3>Search Contacts</h3>
         <SearchBox
           onSearch={(searchTerm) => setSearchField(searchTerm)}
