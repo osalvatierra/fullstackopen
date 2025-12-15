@@ -12,16 +12,7 @@ import LoginForm from './components/Login'
 import Notifications from './components/notifications'
 import EditPersonForm from './components/EditPersonForm'
 
-import loginService from './services/login'
-import registerService from './services/register'
-import personService from './services/personService'
 
-interface User {
-  name: string
-  username: string
-  token: string
-  address?: string
-}
 
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
@@ -34,53 +25,17 @@ const App = () => {
   const [message, setMessage] = useState<string | null>(null) // Fixed: renamed from setErrorMessage
   const [isError, setIsError] = useState(false)
 
-  // Login State
+   // Login State
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState<User | null>(null)
+
 
   // Register State
   const [registerName, setRegisterName] = useState('')
   const [registerEmail, setRegisterEmail] = useState('')
   const [registerAddress, setRegisterAddress] = useState('')
   const [registerPassword, setRegisterPassword] = useState('')
-
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    try {
-      const loginResponse = await loginService.login({
-        username,
-        password,
-      })
-
-      console.log('Login response:', loginResponse) // ← Add this to see what you're getting back
-
-      personService.setToken(loginResponse.token)
-      setUser(loginResponse)
-      setUsername('')
-      setPassword('')
-    } catch (exception: unknown) {
-      console.error('Login failed:', exception)
-      setMessage('Wrong credentials') // Fixed: use setMessage
-      setIsError(true) // Fixed: set error state
-      setTimeout(() => {
-        setMessage(null) // Fixed: use setMessage
-        setIsError(false) // Fixed: reset error state
-      }, 5000)
-    }
-  }
-
-  const handleLogout = () => {
-    setUser(null)
-    personService.setToken('')
-    setPersons([])
-    setMessage('Logged our successfully')
-    setIsError(false)
-    setTimeout(() => {
-      setMessage(null)
-    }, 3000)
-  }
 
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
@@ -110,55 +65,6 @@ const App = () => {
     )
   }
 
-  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    console.log('Register state values:', {
-      registerName,
-      registerEmail,
-      registerAddress,
-      registerPassword,
-    })
-
-    try {
-      const result = await registerService.register({
-        name: registerName,
-        email: registerEmail,
-        address: registerAddress,
-        password: registerPassword,
-      })
-
-      if (result.status === 'ok') {
-        setMessage('Registration successful! Please log in.')
-        setIsError(false)
-        setRegisterName('')
-        setRegisterEmail('')
-        setRegisterAddress('')
-        setRegisterPassword('')
-        setRegisterVisible(false)
-        setLoginVisible(true)
-
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
-      } else {
-        setMessage(result.error || 'Registration failed')
-        setIsError(true)
-        setTimeout(() => {
-          setMessage(null)
-          setIsError(false)
-        }, 5000)
-      }
-    } catch (error: any) {
-      console.error('Registration error:', error)
-      setMessage(error.response?.data?.error || 'Registration failed')
-      setIsError(true)
-      setTimeout(() => {
-        setMessage(null)
-        setIsError(false)
-      }, 5000)
-    }
-  }
 
   const registerForm = () => {
     const hideWhenVisible = { display: registerVisible ? 'none' : '' }
