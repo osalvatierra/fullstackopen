@@ -11,8 +11,8 @@ import RegisterForm from './components/register'
 import LoginForm from './components/Login'
 import Notifications from './components/notifications'
 import EditPersonForm from './components/EditPersonForm'
-
-
+import personService from './services/personService'
+import { useAuth } from './contexts/AuthContext'
 
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
@@ -25,11 +25,12 @@ const App = () => {
   const [message, setMessage] = useState<string | null>(null) // Fixed: renamed from setErrorMessage
   const [isError, setIsError] = useState(false)
 
-   // Login State
+  // Login State
+  const { user, login, logout, register, isAuthenticated } = useAuth()
+
+  // Local State for form inputs
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState<User | null>(null)
-
 
   // Register State
   const [registerName, setRegisterName] = useState('')
@@ -64,7 +65,6 @@ const App = () => {
       </div>
     )
   }
-
 
   const registerForm = () => {
     const hideWhenVisible = { display: registerVisible ? 'none' : '' }
@@ -292,13 +292,75 @@ const App = () => {
     }
   }
 
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      await login(username, password)
+      setUsername('')
+      setPassword('')
+    } catch (exception: unknown) {
+      console.error('Login failed:', exception)
+      setMessage('Wrong credentials')
+      setIsError(true)
+      setTimeout(() => {
+        setMessage(null)
+        setIsError(false)
+      }, 5000)
+    }
+  }
+
+  const handleLogout = () => {
+    logout()
+    setPersons([])
+    setMessage('Logged out successfully')
+    setIsError(false)
+    setTimeout(() => {
+      setMessage(null)
+    }, 3000)
+  }
+
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      await register({
+        name: registerName,
+        email: registerEmail,
+        address: registerAddress,
+        password: registerPassword,
+      })
+
+      setMessage('Registration successful! Please log in.')
+      setIsError(false)
+      setRegisterName('')
+      setRegisterEmail('')
+      setRegisterAddress('')
+      setRegisterPassword('')
+      setRegisterVisible(false)
+      setLoginVisible(true)
+
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    } catch (error: any) {
+      console.error('Registration error:', error)
+      setMessage(error.response?.data?.error || 'Registration failed')
+      setIsError(true)
+      setTimeout(() => {
+        setMessage(null)
+        setIsError(false)
+      }, 5000)
+    }
+  }
+
   console.log('Final persons state:', persons)
   return (
     <main className={styles.homemain}>
       <h2 className={styles.headerPhone}>Phonebook</h2>
       <Notifications message={message} type={isError ? 'error' : 'note'} />
 
-      {user === null ? authForms() : loggedInContent()}
+      {!isAuthenticated ? authForms() : loggedInContent()}
     </main>
   )
 }
