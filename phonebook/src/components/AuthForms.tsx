@@ -3,151 +3,132 @@ import LoginForm from './Login'
 import RegisterForm from './register'
 import styles from './App.module.css'
 
-interface AuthFormsProps {
-    onLogin: (username: string, password: string) => Promise<void>
-    onRegister: (data: RegisterData) => Promise<void>
+interface RegisterData {
+  name: string
+  email: string
+  address: string
+  password: string
 }
 
-export default function AuthForms({onLogin, onRegister}) {
-     const [loginVisible, setLoginVisible] = useState(false)
-     const [registerVisible, setRegisterVisible] = useState(false)
+interface AuthFormsProps {
+  onLogin: (username: string, password: string) => Promise<void>
+  onRegister: (data: RegisterData) => Promise<void>
+}
 
-       // Local State for form inputs
-     const [username, setUsername] = useState('')
-     const [password, setPassword] = useState('')
+export default function AuthForms({ onLogin, onRegister }: AuthFormsProps) {
+  const [loginVisible, setLoginVisible] = useState(false)
+  const [registerVisible, setRegisterVisible] = useState(false)
 
-       // Register State
-     const [registerName, setRegisterName] = useState('')
-     const [registerEmail, setRegisterEmail] = useState('')
-     const [registerAddress, setRegisterAddress] = useState('')
-     const [registerPassword, setRegisterPassword] = useState('')
+  // Local State for form inputs
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-       const { login, logout, register } = useAuth()
-     
+  // Register State
+  const [registerName, setRegisterName] = useState('')
+  const [registerEmail, setRegisterEmail] = useState('')
+  const [registerAddress, setRegisterAddress] = useState('')
+  const [registerPassword, setRegisterPassword] = useState('')
 
-       const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
 
-        try {
-        await login(username, password)
-        setUsername('')
-        setPassword('')
-        } catch (exception: unknown) {
-        console.error('Login failed:', exception)
-        setMessage('Wrong credentials')
-        setIsError(true)
-        setTimeout(() => {
-            setMessage(null)
-            setIsError(false)
-        }, 5000)
-        }
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      await onLogin(username, password)
+      setUsername('')
+      setPassword('')
+    } catch (error) {
+      console.error('Login failed:', error)
+
     }
+  }
 
-    const handleLogout = () => {
-        logout()
-        setPersons([])
-        setMessage('Logged out successfully')
-        setIsError(false)
-        setTimeout(() => {
-        setMessage(null)
-        }, 3000)
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    try {
+      await onRegister({
+        name: registerName,
+        email: registerEmail,
+        address: registerAddress,
+        password: registerPassword,
+      })
+
+
+      setRegisterName('')
+      setRegisterEmail('')
+      setRegisterAddress('')
+      setRegisterPassword('')
+      setRegisterVisible(false)
+      setLoginVisible(true)
+
+    } catch (error) {
+      console.error('Registration error:', error)
+
     }
+  }
 
-    const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
+  const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+  const showWhenVisible = { display: loginVisible ? '' : 'none' }
+  const hideRegisterWhenVisible = { display: registerVisible ? 'none' : '' }
+  const showRegisterWhenVisible = { display: registerVisible ? '' : 'none' }
 
-        try {
-        await register({
-            name: registerName,
-            email: registerEmail,
-            address: registerAddress,
-            password: registerPassword,
-        })
-
-        setMessage('Registration successful! Please log in.')
-        setIsError(false)
-        setRegisterName('')
-        setRegisterEmail('')
-        setRegisterAddress('')
-        setRegisterPassword('')
-        setRegisterVisible(false)
-        setLoginVisible(true)
-
-        setTimeout(() => {
-            setMessage(null)
-        }, 5000)
-        } catch (error: any) {
-        console.error('Registration error:', error)
-        setMessage(error.response?.data?.error || 'Registration failed')
-        setIsError(true)
-        setTimeout(() => {
-            setMessage(null)
-            setIsError(false)
-        }, 5000)
-        }
-    }
-
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
-    const hideRegisterWhenVisible = { display: registerVisible ? 'none' : '' }
-    const showRegisterWhenVisible = { display: registerVisible ? '' : 'none' }
-
-return(
+  return (
     <div className={styles.LogRegButtons}>
-              <div>
-                <div style={hideWhenVisible}>
-                  <button
-                    className={styles.buttonsLogReg}
-                    onClick={() => setLoginVisible(true)}
-                  >
-                    Login
-                  </button>
-                </div>
-                <div style={showWhenVisible}>
-                  <LoginForm
-                    username={username}
-                    password={password}
-                    handleUsernameChange={({ target }) => setUsername(target.value)}
-                    handlePasswordChange={({ target }) => setPassword(target.value)}
-                    handleSubmit={handleLogin}
-                  />
-                  <button onClick={() => setLoginVisible(false)}>cancel</button>
-                </div>
-              </div>
-            
-    
+      <div>
+        <div style={hideWhenVisible}>
+          <button
+            className={styles.buttonsLogReg}
+            onClick={() => setLoginVisible(true)}
+          >
+            Login
+          </button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
 
 
 
-            <div>
-                <div style={hideRegisterWhenVisible}>
-                <button
-                    className={styles.buttonsLogReg}
-                    onClick={() => setRegisterVisible(true)}
-                >
-                    register
-                </button>
-                </div>
-                <div style={showRegisterWhenVisible}>
-                <RegisterForm
-                    name={registerName}
-                    email={registerEmail}
-                    address={registerAddress}
-                    password={registerPassword}
-                    handleNameChange={({ target }) => setRegisterName(target.value)}
-                    handleEmailChange={({ target }) => setRegisterEmail(target.value)}
-                    handleAddressChange={({ target }) =>
-                    setRegisterAddress(target.value)
-                    }
-                    handlePasswordChange={({ target }) =>
-                    setRegisterPassword(target.value)
-                    }
-                    handleSubmit={handleRegister}
-                />
-                <button onClick={() => setRegisterVisible(false)}>cancel</button>
-                </div>
-            </div>
-       
+
+
+      <div>
+        <div style={hideRegisterWhenVisible}>
+          <button
+            className={styles.buttonsLogReg}
+            onClick={() => setRegisterVisible(true)}
+          >
+            register
+          </button>
+        </div>
+        <div style={showRegisterWhenVisible}>
+          <RegisterForm
+            name={registerName}
+            email={registerEmail}
+            address={registerAddress}
+            password={registerPassword}
+            handleNameChange={({ target }) => setRegisterName(target.value)}
+            handleEmailChange={({ target }) => setRegisterEmail(target.value)}
+            handleAddressChange={({ target }) =>
+              setRegisterAddress(target.value)
+            }
+            handlePasswordChange={({ target }) =>
+              setRegisterPassword(target.value)
+            }
+            handleSubmit={handleRegister}
+          />
+          <button onClick={() => setRegisterVisible(false)}>cancel</button>
+        </div>
+      </div>
+
     </div>
-    )
+  )
 }

@@ -21,7 +21,7 @@ const App = () => {
   const { persons, setPersons, handleDelete, handleUpdate, handleSubmit } = usePersons(user)
 
   const handleLogin = async (username: string, password: string) => {
-    try{
+    try {
       await login(username, password)
       showMessage('Login Sussessful', false, 3000)
     } catch {
@@ -44,8 +44,47 @@ const App = () => {
     }
   }
 
+  const handleUpdateWithMessage = async (id: string, data: { name: string; number: string }) => {
+    try {
+      await handleUpdate(id, data)
+      showMessage(`${data.name} was updated`, false)
+    }
+    catch {
+      showMessage('Failed to update contact', true)
+    }
+  }
+
+  const handleSubmitWithMessage = async (data: { name: string; number: string }) => {
+    try {
+      await handleSubmit(data)
+      showMessage(`${data.name} was added to phonebook`, false)
+    } catch (error: any) {
+      let errorMessage = 'An unexpected error occured.'
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error.replace('Person Validation failed: ', '')
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      showMessage(errorMessage, true)
+    }
+  }
+
+  const handleDeleteWithMessage = async (id: string) => {
+    const personToDelete = persons.find((p) => p.id === id)
+    const deletedName = personToDelete?.name ?? 'Uknown'
+
+    try {
+      await handleDelete(id)
+      showMessage(`${deletedName} was removed from the phonebook`, false)
+    }
+    catch {
+      showMessage(`Failed to delete contact.`, true)
+    }
+  }
+
 
   console.log('Final persons state:', persons)
+
   return (
     <main className={styles.homemain}>
       <h2 className={styles.headerPhone}>Phonebook</h2>
@@ -53,14 +92,14 @@ const App = () => {
 
       {!isAuthenticated ? (
         <AuthForms onLogin={handleLogin} onRegister={handleRegister} />
-      ): (
+      ) : (
         <PhonebookContent
           user={user!}
           persons={persons}
           onLogout={handleLogout}
-          onDelete={handleDelete}
-          onUpdate={handleUpdate}
-          onSubmit={handleSubmit}
+          onDelete={handleDeleteWithMessage}
+          onUpdate={handleUpdateWithMessage}
+          onSubmit={handleSubmitWithMessage}
         />
       )}
     </main>
