@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import LoginForm from './Login'
 import RegisterForm from './register'
-import styles from './App.module.css'
+import styles from '../App.module.css'
 
 interface RegisterData {
   name: string
