@@ -1,6 +1,7 @@
 import { useAuth } from './contexts/AuthContext'
 import { usePersons } from './hooks/usePersons'
 import { useNotifications } from './hooks/useNotifications'
+import { usePhonebook } from './hooks/usePhonebook'
 import AuthForms from './components/AuthForms'
 import PhonebookContent from './components/PhonebookContent'
 import Notifications from './components/notifications'
@@ -18,16 +19,9 @@ const App = () => {
   // Login State
   const { user, isAuthenticated, login, logout, register } = useAuth()
   const { message, isError, showMessage } = useNotifications()
-  const { persons, setPersons, handleDelete, handleUpdate, handleSubmit } = usePersons(user)
-
-  const handleLogin = async (username: string, password: string) => {
-    try {
-      await login(username, password)
-      showMessage('Login Sussessful', false, 3000)
-    } catch {
-      showMessage('Wrong credentials', true)
-    }
-  }
+  const { persons, setPersons, handleDelete, handleUpdate, handleSubmit } =
+    usePersons(user)
+  const { handleLogin } = usePhonebook()
 
   const handleLogout = () => {
     logout()
@@ -44,24 +38,32 @@ const App = () => {
     }
   }
 
-  const handleUpdateWithMessage = async (id: string, data: { name: string; number: string }) => {
+  const handleUpdateWithMessage = async (
+    id: string,
+    data: { name: string; number: string }
+  ) => {
     try {
       await handleUpdate(id, data)
       showMessage(`${data.name} was updated`, false)
-    }
-    catch {
+    } catch {
       showMessage('Failed to update contact', true)
     }
   }
 
-  const handleSubmitWithMessage = async (data: { name: string; number: string }) => {
+  const handleSubmitWithMessage = async (data: {
+    name: string
+    number: string
+  }) => {
     try {
       await handleSubmit(data)
       showMessage(`${data.name} was added to phonebook`, false)
     } catch (error: any) {
       let errorMessage = 'An unexpected error occured.'
       if (error.response?.data?.error) {
-        errorMessage = error.response.data.error.replace('Person Validation failed: ', '')
+        errorMessage = error.response.data.error.replace(
+          'Person Validation failed: ',
+          ''
+        )
       } else if (error.message) {
         errorMessage = error.message
       }
@@ -76,12 +78,10 @@ const App = () => {
     try {
       await handleDelete(id)
       showMessage(`${deletedName} was removed from the phonebook`, false)
-    }
-    catch {
+    } catch {
       showMessage(`Failed to delete contact.`, true)
     }
   }
-
 
   console.log('Final persons state:', persons)
 
