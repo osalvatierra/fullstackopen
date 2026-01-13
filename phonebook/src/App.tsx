@@ -12,8 +12,9 @@ const App = () => {
   // Login State
   const { user, isAuthenticated } = useAuth()
   const { message, isError } = useNotifications()
-  const { persons } = usePersons(user)
+
   const {
+    persons,
     handleLogin,
     handleLogout,
     handleRegister,

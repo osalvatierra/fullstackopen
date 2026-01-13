@@ -18,7 +18,7 @@ export function usePhonebook() {
   const handleLogin = async (username: string, password: string) => {
     try {
       await login(username, password)
-      showMessage('Login Sussessful', false, 3000)
+      showMessage('Login Successful', false, 3000)
     } catch {
       showMessage('Wrong credentials', true)
     }
@@ -33,7 +33,7 @@ export function usePhonebook() {
   const handleRegister = async (data: RegisterData) => {
     try {
       await register(data)
-      showMessage('Registration sucessful! Please log in', false, 3000)
+      showMessage('Registration Successful! Please log in', false, 3000)
     } catch (error: any) {
       showMessage(error.response?.data.error || 'Registration failed', true)
     }
@@ -56,10 +56,15 @@ export function usePhonebook() {
     number: string
   }) => {
     try {
-      await handleSubmit(data)
-      showMessage(`${data.name} was added to phonebook`, false)
+      const result = await handleSubmit(data)
+
+      if (result.type === 'update') {
+        showMessage(`${data.name} was updated`, false)
+      } else {
+        showMessage(`${data.name} was added to phonebook`, false)
+      }
     } catch (error: any) {
-      let errorMessage = 'An unexpected error occured.'
+      let errorMessage = 'An unexpected error occurred.'
       if (error.response?.data?.error) {
         errorMessage = error.response.data.error.replace(
           'Person Validation failed: ',
@@ -74,7 +79,7 @@ export function usePhonebook() {
 
   const handleDeleteWithMessage = async (id: string) => {
     const personToDelete = persons.find((p) => p.id === id)
-    const deletedName = personToDelete?.name ?? 'Uknown'
+    const deletedName = personToDelete?.name ?? 'Unknown'
 
     try {
       await handleDelete(id)
@@ -85,6 +90,7 @@ export function usePhonebook() {
   }
 
   return {
+    persons,
     handleLogin,
     handleLogout,
     handleRegister,

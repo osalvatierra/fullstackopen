@@ -21,15 +21,8 @@ export function usePersons(user: User | null) {
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this contact?')) {
-      await personService
-        .remove(id)
-        .then(() => {
-          setPersons(persons.filter((p) => p.id !== id))
-        })
-        .catch((err) => {
-          console.error(err)
-          throw err
-        })
+      await personService.remove(id)
+      setPersons(persons.filter((p) => p.id !== id))
     }
   }
   const handleUpdate = async (
@@ -42,16 +35,9 @@ export function usePersons(user: User | null) {
       number: data.number,
     }
 
-    await personService
-      .update(id, updatedPerson)
-      .then((response) => {
-        setPersons(persons.map((p) => (p.id === id ? response : p)))
-        return response
-      })
-      .catch((error) => {
-        console.error(error)
-        throw error
-      })
+    const response = await personService.update(id, updatedPerson)
+    setPersons(persons.map((p) => (p.id === id ? response : p)))
+    return response
   }
 
   const handleSubmit = async (data: { name: string; number: string }) => {
@@ -66,35 +52,24 @@ export function usePersons(user: User | null) {
         name: name,
         number: number,
       }
-      await personService
-        .update(existingPerson.id, updatedPerson)
-        .then((response) => {
-          setPersons(
-            persons.map((p) => (p.id === existingPerson.id ? response : p))
-          )
-          return response
-        })
-        .catch((error) => {
-          console.error(error)
-          throw error
-        })
+      const response = await personService.update(
+        existingPerson.id,
+        updatedPerson
+      )
+
+      setPersons(
+        persons.map((p) => (p.id === existingPerson.id ? response : p))
+      )
+      return response
     } else {
       const newPerson: NewPhonebookEntry = {
         name: name,
         number: number,
       }
 
-      await personService
-        .create(newPerson)
-        .then((response) => {
-          setPersons((prev) => prev.concat(response))
-          return response
-        })
-        .catch((error) => {
-          console.error('Error object:', error)
-          console.error('Error response:', error.response?.data)
-          throw error
-        })
+      const response = await personService.create(newPerson)
+      setPersons((prev) => prev.concat(response))
+      return response
     }
   }
 
