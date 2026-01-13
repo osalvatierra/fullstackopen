@@ -52,6 +52,7 @@ export function usePersons(user: User | null) {
         name: name,
         number: number,
       }
+
       const response = await personService.update(
         existingPerson.id,
         updatedPerson
@@ -60,7 +61,7 @@ export function usePersons(user: User | null) {
       setPersons(
         persons.map((p) => (p.id === existingPerson.id ? response : p))
       )
-      return response
+      return { type: 'update', response }
     } else {
       const newPerson: NewPhonebookEntry = {
         name: name,
@@ -69,7 +70,7 @@ export function usePersons(user: User | null) {
 
       const response = await personService.create(newPerson)
       setPersons((prev) => prev.concat(response))
-      return response
+      return { type: 'create', response }
     }
   }
 
