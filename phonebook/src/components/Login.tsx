@@ -1,8 +1,6 @@
 import { loginProps } from '../types/loginprops'
 import styles from './LoginReg.module.css'
 
-import { useAuth } from '../contexts/AuthContext'
-
 const LoginForm = ({
   handleSubmit,
   handleUsernameChange,

@@ -1,6 +1,6 @@
 import { useAuth } from '../contexts/AuthContext'
 import { usePersons } from '../hooks/usePersons'
-import { useNotifications } from '../hooks/useNotifications'
+import { useNotifications } from '../contexts/NotificationContext'
 
 interface RegisterData {
   name: string

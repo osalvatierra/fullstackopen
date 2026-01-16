@@ -1,6 +1,5 @@
 import { useAuth } from './contexts/AuthContext'
-import { usePersons } from './hooks/usePersons'
-import { useNotifications } from './hooks/useNotifications'
+import { useNotifications } from './contexts/NotificationContext'
 import { usePhonebook } from './hooks/usePhonebook'
 import AuthForms from './components/AuthForms'
 import PhonebookContent from './components/PhonebookContent'
