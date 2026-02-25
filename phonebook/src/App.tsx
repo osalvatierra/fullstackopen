@@ -25,8 +25,8 @@ const App = () => {
   console.log('Final persons state:', persons)
 
   return (
-    <main className={styles.homemain}>
-      <h2 className={styles.headerPhone}>Phonebook</h2>
+    <main className={`${styles.homemain} flex flex-col min-h-screen`}>
+      <h2 className={`${styles.headerPhone} text-3xl font-bold`}>Phonebook</h2>
       <Notifications message={message} type={isError ? 'error' : 'note'} />
 
       {!isAuthenticated ? (

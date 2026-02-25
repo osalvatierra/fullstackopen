@@ -57,7 +57,7 @@ export default function PhonebookContent({
 
   return (
     <div className={styles.content}>
-      <div className="flex flex-row">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <p>{user?.username} logged in</p>
         <button onClick={onLogout}>Logout</button>
 
