@@ -1,7 +1,16 @@
 @import 'tailwindcss';
 
-input {
+button,
+input,
+select,
+optgroup,
+textarea {
   background-color: white;
+}
+
+button:hover {
+  background-color: #989797;
+  cursor: pointer;
 }
 
 h1 {

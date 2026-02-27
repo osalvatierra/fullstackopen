@@ -56,8 +56,8 @@ export default function PhonebookContent({
   )
 
   return (
-    <div className={styles.content}>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+      <div className="max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
         <p>{user?.username} logged in</p>
         <button onClick={onLogout}>Logout</button>
 
@@ -77,7 +77,7 @@ export default function PhonebookContent({
         <PersonForm handleSubmit={onSubmit} />
       </div>
 
-      <div>
+      <div className="max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
         <h3>Welcome {user?.name} </h3>
         <h3>
           Address
