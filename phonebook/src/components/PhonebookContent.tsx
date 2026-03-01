@@ -4,7 +4,8 @@ import PersonForm from './PersonForm'
 import SearchList from './SearchList'
 import EditPersonForm from './EditPersonForm'
 import { Phonebook } from '../types/phonebook'
-import styles from '../App.module.css'
+import { Button } from './ui';
+
 
 interface User {
   name: string
@@ -57,9 +58,9 @@ export default function PhonebookContent({
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
-      <div className="max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+      <div className="items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
         <p>{user?.username} logged in</p>
-        <button onClick={onLogout}>Logout</button>
+        <Button onClick={onLogout}>Logout</Button>
 
         <h3>Search Contacts</h3>
 
@@ -77,7 +78,7 @@ export default function PhonebookContent({
         <PersonForm handleSubmit={onSubmit} />
       </div>
 
-      <div className="max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+      <div className="items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
         <h3>Welcome {user?.name} </h3>
         <h3>
           Address

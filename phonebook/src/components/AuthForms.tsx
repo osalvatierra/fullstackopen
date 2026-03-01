@@ -2,6 +2,7 @@ import { useState } from 'react'
 import LoginForm from './Login'
 import RegisterForm from './register'
 import styles from '../App.module.css'
+import { Button, Input } from './ui';
 
 interface RegisterData {
   name: string
@@ -92,7 +93,7 @@ export default function AuthForms({ onLogin, onRegister }: AuthFormsProps) {
             handlePasswordChange={({ target }) => setPassword(target.value)}
             handleSubmit={handleLogin}
           />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
+          <Button onClick={() => setLoginVisible(false)}>cancel</Button>
         </div>
       </div>
 
@@ -125,7 +126,7 @@ export default function AuthForms({ onLogin, onRegister }: AuthFormsProps) {
             }
             handleSubmit={handleRegister}
           />
-          <button onClick={() => setRegisterVisible(false)}>cancel</button>
+          <Button onClick={() => setRegisterVisible(false)}>cancel</Button>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-button,
+
 input,
 select,
 optgroup,
@@ -23,6 +23,7 @@ li {
   padding-top: 3px;
   font-size: 15px;
 }
+
 .note {
   color: green;
   padding-top: 5px;

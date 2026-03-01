@@ -1,5 +1,6 @@
 import { formProps } from '../types/formprops'
 import { useState } from 'react'
+import { Button, Input } from './ui';
 
 const PersonForm = ({ handleSubmit }: formProps) => {
   const [newName, setNewName] = useState('')
@@ -27,22 +28,22 @@ const PersonForm = ({ handleSubmit }: formProps) => {
     <form onSubmit={onSubmit}>
       <div>
         name:
-        <input
+        <Input
           placeholder={'Full Name'}
           value={newName}
           onChange={handleName}
         />
       </div>
       <div>
-        Phone: <input value={newNumber} onChange={handleNumber} />
+        Phone: <Input value={newNumber} onChange={handleNumber} />
       </div>
       <div>
-        <button
+        <Button
           type="submit"
-          className="border-purple-200 text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white active:bg-purple-700 ..."
+          className="border-2 border-solid border-purple-200 text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white active:bg-purple-700 ..."
         >
           add
-        </button>
+        </Button>
       </div>
     </form>
   )

@@ -1,4 +1,5 @@
 import React, { useState, ReactNode } from 'react'
+import { Button } from './ui';
 
 interface TogglableProps {
   buttonLabel: string
@@ -18,11 +19,11 @@ const Togglable: React.FC<TogglableProps> = ({ buttonLabel, children }) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        <Button onClick={toggleVisibility}>{buttonLabel}</Button>
       </div>
       <div style={showWhenVisible}>
         {children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <Button onClick={toggleVisibility}>cancel</Button>
       </div>
     </div>
   )

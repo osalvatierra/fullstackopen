@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { SearchBoxProps } from '../types/searchboxprops'
+import { Input } from './ui';
+
 
 const SearchBox = ({ placeholder, onSearch }: SearchBoxProps) => {
   const [searchField, setSearchField] = useState('')
@@ -9,7 +11,7 @@ const SearchBox = ({ placeholder, onSearch }: SearchBoxProps) => {
     onSearch(searchFieldString)
   }
   return (
-    <input
+    <Input
       placeholder={placeholder}
       value={searchField}
       onChange={onSearchChange}
