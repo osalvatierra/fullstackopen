@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './LoginReg.module.css'
+import { Button, Input } from './ui';
 
 interface RegisterFormProps {
   name: string
@@ -31,7 +32,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.row}>
           <label htmlFor="name">Name</label>
-          <input
+          <Input
             type="text"
             id="name"
             value={name}
@@ -42,7 +43,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
         <div className={styles.row}>
           <label htmlFor="email">Email</label>
-          <input
+          <Input
             type="email"
             id="email"
             value={email}
@@ -52,7 +53,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
         <div className={styles.row}>
           <label htmlFor="Address">Address</label>
-          <input
+          <Input
             type="address"
             id="address"
             value={address}
@@ -62,7 +63,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
         <div className={styles.row}>
           <label htmlFor="password">Password</label>
-          <input
+          <Input
             type="password"
             id="password"
             value={password}
@@ -71,7 +72,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
             minLength={6}
           />
         </div>
-        <button type="submit">Register</button>
+        <Button type="submit">Register</Button>
       </form>
     </main>
   )
