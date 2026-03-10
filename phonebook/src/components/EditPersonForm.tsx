@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Phonebook } from '../types/phonebook'
+import { Button, Input } from './ui'
 
 interface EditPersonFormProps {
   person: Phonebook
@@ -47,7 +48,7 @@ const EditPersonForm: React.FC<EditPersonFormProps> = ({
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '1rem' }}>
             <label htmlFor="name">Name</label>
-            <input
+            <Input
               type="text"
               id="name"
               value={name}
@@ -58,7 +59,7 @@ const EditPersonForm: React.FC<EditPersonFormProps> = ({
           </div>
           <div style={{ marginBottom: '1rem' }}>
             <label htmlFor="number">Number</label>
-            <input
+            <Input
               type="text"
               id="number"
               value={number}
@@ -68,10 +69,10 @@ const EditPersonForm: React.FC<EditPersonFormProps> = ({
             />
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button type="submit">Save</button>
-            <button type="button" onClick={onCancel}>
+            <Button type="submit">Save</Button>
+            <Button type="button" onClick={onCancel}>
               Cancel
-            </button>
+            </Button>
           </div>
         </form>
       </div>
