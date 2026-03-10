@@ -1,4 +1,5 @@
 import { Phonebook } from '../types/phonebook'
+import { Button } from './ui'
 
 type SearchListProps = {
   persons: Phonebook[]
@@ -11,14 +12,16 @@ const SearchList = ({ persons, handleEdit, handleDelete }: SearchListProps) => {
     <div>
       <ul>
         {persons.map((person) => (
-          <li key={person.id}>
+          <li key={person.id} className="flow-root">
             {person.name} — {person.number}{' '}
-            <button type="button" onClick={() => handleEdit(person)}>
-              Edit
-            </button>
-            <button type="button" onClick={() => handleDelete(person.id)}>
-              Delete
-            </button>
+            <div className="float-right">
+              <Button type="button" onClick={() => handleEdit(person)}>
+                Edit
+              </Button>
+              <Button type="button" onClick={() => handleDelete(person.id)}>
+                Delete
+              </Button>
+            </div>
           </li>
         ))}
       </ul>

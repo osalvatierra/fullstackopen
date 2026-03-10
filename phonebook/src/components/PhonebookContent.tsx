@@ -4,8 +4,8 @@ import PersonForm from './PersonForm'
 import SearchList from './SearchList'
 import EditPersonForm from './EditPersonForm'
 import { Phonebook } from '../types/phonebook'
-import { Button } from './ui';
-
+import { Button } from './ui'
+import Avatar from 'react-avatar'
 
 interface User {
   name: string
@@ -57,10 +57,14 @@ export default function PhonebookContent({
   )
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
-      <div className="items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-        <p>{user?.username} logged in</p>
-        <Button onClick={onLogout}>Logout</Button>
+    <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 p-8">
+      <div className="flex flex-col space-y-4 items-left gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+        <Button className="float-right" onClick={onLogout}>
+          Logout
+        </Button>
+        <p className="text-lg font-semibold text-black p-4 w-80">
+          {user?.username} logged in
+        </p>
 
         <h3>Search Contacts</h3>
 
@@ -79,6 +83,13 @@ export default function PhonebookContent({
       </div>
 
       <div className="items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+        <Avatar
+          name={user?.name}
+          size="150"
+          round={true}
+          color="#6366f1" // indigo-500
+          fgColor="#ffffff" // white text
+        />
         <h3>Welcome {user?.name} </h3>
         <h3>
           Address
