@@ -1,3 +1,5 @@
+import Avatar from 'react-avatar'
+import { Camera } from 'lucide-react'
 import { useState } from 'react'
 import SearchBox from './SearchBox'
 import PersonForm from './PersonForm'
@@ -5,7 +7,6 @@ import SearchList from './SearchList'
 import EditPersonForm from './EditPersonForm'
 import { Phonebook } from '../types/phonebook'
 import { Button } from './ui'
-import Avatar from 'react-avatar'
 
 interface User {
   name: string
@@ -52,6 +53,8 @@ export default function PhonebookContent({
     setEditingPerson(null)
   }
 
+  const [isHoveringAvatar, setIsHoveringAvatar] = useState(false)
+
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(searchField.toLowerCase()),
   )
@@ -82,14 +85,32 @@ export default function PhonebookContent({
         <PersonForm handleSubmit={onSubmit} />
       </div>
 
-      <div className="items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+      <div
+        className="relative items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+        onMouseEnter={() => setIsHoveringAvatar(true)}
+        onMouseLeave={() => setIsHoveringAvatar(false)}
+      >
         <Avatar
           name={user?.name}
           size="150"
           round={true}
-          color="#6366f1" // indigo-500
-          fgColor="#ffffff" // white text
+          color="#6366f1"
+          fgColor="#ffffff"
         />
+
+        {isHoveringAvatar && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center cursor-pointer">
+            <Camera size={32} className="text-white" />
+          </div>
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          id="avatar-upload"
+          // onChange handler coming next
+        />
+
         <h3>Welcome {user?.name} </h3>
         <h3>
           Address
