@@ -99,8 +99,8 @@ export default function PhonebookContent({
         />
 
         {isHoveringAvatar && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center cursor-pointer">
-            <Camera size={32} className="text-white" />
+          <div className="absolute items-center gap-x-4 rounded-xl bg-black p-6 bg-opacity-50 shadow-lg outline cursor-pointer outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+            <Camera size={150} className="text-white" />
           </div>
         )}
         <input

@@ -5,6 +5,8 @@ const userSchema = new mongoose.Schema({
   name: String,
   address: String,
   passwordHash: String,
+  avatarUrl: String,
+  avatarPublicId: String,
   persons: [
     {
       type: mongoose.Schema.Types.ObjectId,
