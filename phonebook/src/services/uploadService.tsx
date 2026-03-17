@@ -20,6 +20,8 @@ const uploadAvatar = async (file: File) => {
   }
 
   const response = await axios.post(`${baseUrl}/avatar`, formData, config)
+  console.log('Upload service response:', response.data) // ← Add this
+
   return response.data
 }
 

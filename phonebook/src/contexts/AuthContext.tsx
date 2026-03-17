@@ -39,7 +39,7 @@ type AuthAction =
   | { type: 'LOGIN'; payload: User }
   | { type: 'LOGOUT' }
   | { type: 'REGISTER_SUCCESS' }
-  | { type: 'UPDATE_USER'; payload: User }
+  | { type: 'UPDATE_USER'; payload: Partial<User> }
 
 // Reducer
 function authReducer(state, action: AuthAction) {
@@ -64,10 +64,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateUser = (updates: Partial<User>) => {
     if (user) {
-      dispatch({ type: `UPDATE_USER`, payload: [...user, ...updates] })
+      dispatch({
+        type: 'UPDATE_USER',
+        payload: { ...user, ...updates }, // ← Merging current user with updates
+      })
     }
   }
-
   const login = async (username: string, password: string) => {
     try {
       const loginResponse = await loginService.login({

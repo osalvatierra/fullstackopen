@@ -43,13 +43,13 @@ uploadRouter.post(
         { new: true },
       )
 
-      res.json({
+      res.status(200).json({
         avatarUrl: user.avatarUrl,
         message: 'Avatar uploaded successfully',
       })
     } catch (error) {
       console.error('Upload error:', error)
-      res.status(500).json({ error: 'Upload failed' })
+      res.status(200).json({ error: 'Upload failed' })
     }
   },
 )

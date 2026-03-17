@@ -74,6 +74,7 @@ export default function PhonebookContent({
       setUploading(true)
       uploadService.setToken(user.token)
       const result = await uploadService.uploadAvatar(file)
+      console.log('Upload result:', result) // ← See what's actually returned
 
       // Update user object with new avatar URL
       // You'll need to add a way to update the user in your AuthContext
@@ -134,52 +135,54 @@ export default function PhonebookContent({
         <PersonForm handleSubmit={onSubmit} />
       </div>
 
-      <div
-        className="relative cursor-pointer items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-        onMouseEnter={() => setIsHoveringAvatar(true)}
-        onMouseLeave={() => setIsHoveringAvatar(false)}
-        onClick={handleAvatarClick}
-      >
-        {user.avatarUrl ? (
-          <img
-            src={user.avatarUrl}
-            alt={`${user.name} avatar`}
-            className="w-36 h-36 rounded-full object-cover"
+      <div className="relative cursor-pointer items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+        <div
+          className="relative w-36 h-36 mx-auto mb-4"
+          onMouseEnter={() => setIsHoveringAvatar(true)}
+          onMouseLeave={() => setIsHoveringAvatar(false)}
+          onClick={handleAvatarClick}
+        >
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={`${user.name} avatar`}
+              className="w-36 h-36 rounded-full object-cover"
+            />
+          ) : (
+            <Avatar
+              name={user?.name}
+              size="150"
+              round={true}
+              color="#6366f1"
+              fgColor="#ffffff"
+            />
+          )}
+          {(isHoveringAvatar || uploading) && (
+            <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+              {uploading ? (
+                <div className="text-white">Uploading...</div>
+              ) : (
+                <Camera size={32} className="text-white" />
+              )}
+            </div>
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            id="avatar-upload"
+            onChange={handleFileChange}
+            disabled={uploading}
           />
-        ) : (
-          <Avatar
-            name={user?.name}
-            size="150"
-            round={true}
-            color="#6366f1"
-            fgColor="#ffffff"
-          />
-        )}
-        {(isHoveringAvatar || uploading) && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-            {uploading ? (
-              <div className="text-white">Uploading...</div>
-            ) : (
-              <Camera size={32} className="text-white" />
-            )}
-          </div>
-        )}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          id="avatar-upload"
-          onChange={handleFileChange}
-          disabled={uploading}
-        />
 
-        <h3>Welcome {user?.name} </h3>
-        <h3>
-          Address
-          <br />
-          {user?.address}
-        </h3>
+          <h3>Welcome {user?.name} </h3>
+          <h3>
+            Address
+            <br />
+            {user?.address}
+          </h3>
+        </div>
       </div>
 
       {editingPerson && (
