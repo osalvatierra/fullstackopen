@@ -22,6 +22,9 @@ uploadRouter.post(
   upload.single('avatar'),
   async (req, res) => {
     try {
+      console.log('Upload request received') // ← Add this
+      console.log('File:', req.file) // ← Add this
+      console.log('User ID:', req.userId) // ← Add this
       if (!req.userId) {
         return res.status(401).json({ error: 'Token missing or invalid' })
       }
