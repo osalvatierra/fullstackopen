@@ -8,6 +8,7 @@ interface User {
   username: string
   token: string
   address?: string
+  avatarUrl?: string
 }
 
 interface RegisterCredentials {
@@ -22,6 +23,7 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>
   logout: () => void
   register: (credentials: RegisterCredentials) => Promise<void>
+  updateUser: (updates: Partial<User>) => void
   isAuthenticated: boolean
 }
 
@@ -37,6 +39,7 @@ type AuthAction =
   | { type: 'LOGIN'; payload: User }
   | { type: 'LOGOUT' }
   | { type: 'REGISTER_SUCCESS' }
+  | { type: 'UPDATE_USER'; payload: User }
 
 // Reducer
 function authReducer(state, action: AuthAction) {
@@ -45,7 +48,8 @@ function authReducer(state, action: AuthAction) {
       return { ...state, user: action.payload, isAuthenticated: true }
     case 'LOGOUT':
       return { ...state, user: null, isAuthenticated: false }
-
+    case 'UPDATE_USER':
+      return { ...state, user: action.payload }
     default:
       throw new Error('Unknown action')
   }
@@ -55,8 +59,14 @@ function authReducer(state, action: AuthAction) {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [{ user, isAuthenticated }, dispatch] = useReducer(
     authReducer,
-    initialState
+    initialState,
   )
+
+  const updateUser = (updates: Partial<User>) => {
+    if (user) {
+      dispatch({ type: `UPDATE_USER`, payload: [...user, ...updates] })
+    }
+  }
 
   const login = async (username: string, password: string) => {
     try {
@@ -84,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, register }}
+      value={{ user, isAuthenticated, login, logout, register, updateUser }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,18 +1,22 @@
+import { useState, useRef } from 'react'
 import Avatar from 'react-avatar'
 import { Camera } from 'lucide-react'
-import { useState } from 'react'
 import SearchBox from './SearchBox'
 import PersonForm from './PersonForm'
 import SearchList from './SearchList'
+import uploadService from '../services/uploadService'
+import { useNotifications } from '../contexts/NotificationContext'
 import EditPersonForm from './EditPersonForm'
 import { Phonebook } from '../types/phonebook'
 import { Button } from './ui'
+import { useAuth } from '../contexts/AuthContext'
 
 interface User {
   name: string
   username: string
   token: string
   address?: string
+  avatarUrl?: string
 }
 
 interface PhonebookContentProps {
@@ -35,8 +39,55 @@ export default function PhonebookContent({
   const [searchField, setSearchField] = useState('')
   const [editingPerson, setEditingPerson] = useState<Phonebook | null>(null)
 
+  const { updateUser } = useAuth()
+  const { showMessage } = useNotifications()
+  const [isHoveringAvatar, setIsHoveringAvatar] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click()
+  }
+
   const handleEdit = (person: Phonebook) => {
     setEditingPerson(person)
+  }
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    //Validate file size
+    if (file.size > 5 * 1024 * 1024) {
+      showMessage('File size must be less than 5MB', true)
+      return
+    }
+
+    if (!file.type.startsWith('image/')) {
+      showMessage('Please upload an image file', true)
+      return
+    }
+
+    try {
+      setUploading(true)
+      uploadService.setToken(user.token)
+      const result = await uploadService.uploadAvatar(file)
+
+      // Update user object with new avatar URL
+      // You'll need to add a way to update the user in your AuthContext
+      updateUser({ avatarUrl: result.avatarUrl })
+      showMessage('Profile photo updated successfully!', false)
+
+      // TODO: Update user state with new avatarUrl
+      // This might require adding an updateUser function to AuthContext
+    } catch (error) {
+      console.error('Upload failed:', error)
+      showMessage('Failed to upload photo', true)
+    } finally {
+      setUploading(false)
+    }
   }
 
   const handleCancelEdit = () => {
@@ -52,8 +103,6 @@ export default function PhonebookContent({
     onUpdate(editingPerson.id, updatedData)
     setEditingPerson(null)
   }
-
-  const [isHoveringAvatar, setIsHoveringAvatar] = useState(false)
 
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(searchField.toLowerCase()),
@@ -86,29 +135,43 @@ export default function PhonebookContent({
       </div>
 
       <div
-        className="relative items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+        className="relative cursor-pointer items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
         onMouseEnter={() => setIsHoveringAvatar(true)}
         onMouseLeave={() => setIsHoveringAvatar(false)}
+        onClick={handleAvatarClick}
       >
-        <Avatar
-          name={user?.name}
-          size="150"
-          round={true}
-          color="#6366f1"
-          fgColor="#ffffff"
-        />
-
-        {isHoveringAvatar && (
-          <div className="absolute items-center gap-x-4 rounded-xl bg-black p-6 bg-opacity-50 shadow-lg outline cursor-pointer outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-            <Camera size={150} className="text-white" />
+        {user.avatarUrl ? (
+          <img
+            src={user.avatarUrl}
+            alt={`${user.name} avatar`}
+            className="w-36 h-36 rounded-full object-cover"
+          />
+        ) : (
+          <Avatar
+            name={user?.name}
+            size="150"
+            round={true}
+            color="#6366f1"
+            fgColor="#ffffff"
+          />
+        )}
+        {(isHoveringAvatar || uploading) && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+            {uploading ? (
+              <div className="text-white">Uploading...</div>
+            ) : (
+              <Camera size={32} className="text-white" />
+            )}
           </div>
         )}
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*"
           className="hidden"
           id="avatar-upload"
-          // onChange handler coming next
+          onChange={handleFileChange}
+          disabled={uploading}
         />
 
         <h3>Welcome {user?.name} </h3>
