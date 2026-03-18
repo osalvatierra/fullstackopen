@@ -26,7 +26,9 @@ const App = () => {
 
   return (
     <main className={`${styles.homemain} flex flex-col min-h-screen`}>
-      <h2 className={`${styles.headerPhone} text-3xl font-bold`}>Phonebook</h2>
+      <h2 className={`${styles.headerPhone} text-3xl font-bold p-8`}>
+        Personal Project Planner
+      </h2>
       <Notifications message={message} type={isError ? 'error' : 'note'} />
 
       {!isAuthenticated ? (
