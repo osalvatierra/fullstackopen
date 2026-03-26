@@ -110,88 +110,97 @@ export default function PhonebookContent({
   )
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 p-8">
-      <div className="flex flex-col space-y-4 items-left gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-        <Button className="float-right" onClick={onLogout}>
-          Logout
-        </Button>
-        <p className="text-lg font-semibold text-black p-4 w-80">
-          {user?.username} logged in
-        </p>
+    <>
+      <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 p-8">
+        <div className="flex flex-col space-y-4 items-left gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+          <Button className="float-right" onClick={onLogout}>
+            Logout
+          </Button>
+          <p className="text-lg font-semibold text-black p-4 w-80">
+            {user?.username} logged in
+          </p>
 
-        <h3>Search Contacts</h3>
+          <h3>Search Contacts</h3>
 
-        <SearchBox
-          onSearch={(searchTerm) => setSearchField(searchTerm)}
-          placeholder="search contacts"
-        />
-
-        <SearchList
-          persons={filteredPersons}
-          handleDelete={onDelete}
-          handleEdit={handleEdit}
-        />
-
-        <PersonForm handleSubmit={onSubmit} />
-      </div>
-
-      <div className="relative cursor-pointer items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-        <div
-          className="relative w-36 h-36 mx-auto mb-4"
-          onMouseEnter={() => setIsHoveringAvatar(true)}
-          onMouseLeave={() => setIsHoveringAvatar(false)}
-          onClick={handleAvatarClick}
-        >
-          {user.avatarUrl ? (
-            <img
-              src={user.avatarUrl}
-              alt={`${user.name} avatar`}
-              className="w-36 h-36 rounded-full object-cover"
-            />
-          ) : (
-            <Avatar
-              name={user?.name}
-              size="150"
-              round={true}
-              color="#6366f1"
-              fgColor="#ffffff"
-            />
-          )}
-          {(isHoveringAvatar || uploading) && (
-            <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
-              {uploading ? (
-                <div className="text-white">Uploading...</div>
-              ) : (
-                <Camera size={32} className="text-white" />
-              )}
-            </div>
-          )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            id="avatar-upload"
-            onChange={handleFileChange}
-            disabled={uploading}
+          <SearchBox
+            onSearch={(searchTerm) => setSearchField(searchTerm)}
+            placeholder="search contacts"
           />
 
-          <h3>Welcome {user?.name} </h3>
-          <h3>
-            Address
-            <br />
-            {user?.address}
-          </h3>
+          <SearchList
+            persons={filteredPersons}
+            handleDelete={onDelete}
+            handleEdit={handleEdit}
+          />
+
+          <PersonForm handleSubmit={onSubmit} />
         </div>
+
+        <div className="relative cursor-pointer items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+          <div
+            className="relative w-36 h-36 mx-auto mb-4"
+            onMouseEnter={() => setIsHoveringAvatar(true)}
+            onMouseLeave={() => setIsHoveringAvatar(false)}
+            onClick={handleAvatarClick}
+          >
+            {user.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={`${user.name} avatar`}
+                className="w-36 h-36 rounded-full object-cover"
+              />
+            ) : (
+              <Avatar
+                name={user?.name}
+                size="150"
+                round={true}
+                color="#6366f1"
+                fgColor="#ffffff"
+              />
+            )}
+            {(isHoveringAvatar || uploading) && (
+              <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                {uploading ? (
+                  <div className="text-white">Uploading...</div>
+                ) : (
+                  <Camera size={32} className="text-white" />
+                )}
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="avatar-upload"
+              onChange={handleFileChange}
+              disabled={uploading}
+            />
+          </div>
+          <div className="p-5">
+            <h3>Welcome {user?.name} </h3>
+            <h3>
+              Address
+              <br />
+              {user?.address}
+            </h3>
+          </div>
+        </div>
+
+        {editingPerson && (
+          <EditPersonForm
+            person={editingPerson}
+            onSubmit={handleUpdateSubmit}
+            onCancel={handleCancelEdit}
+          />
+        )}
       </div>
 
-      {editingPerson && (
-        <EditPersonForm
-          person={editingPerson}
-          onSubmit={handleUpdateSubmit}
-          onCancel={handleCancelEdit}
-        />
-      )}
-    </div>
+      <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 p-8">
+        <div className="flex flex-col space-y-4 items-left gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+          <p>test</p>
+        </div>
+      </div>
+    </>
   )
 }
