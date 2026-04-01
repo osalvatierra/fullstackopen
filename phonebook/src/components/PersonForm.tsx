@@ -1,6 +1,6 @@
 import { formProps } from '../types/formprops'
 import { useState } from 'react'
-import { Button, Input } from './ui';
+import { Button, Input } from './ui'
 
 const PersonForm = ({ handleSubmit }: formProps) => {
   const [newName, setNewName] = useState('')
@@ -25,27 +25,32 @@ const PersonForm = ({ handleSubmit }: formProps) => {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <div>
-        name:
-        <Input
-          placeholder={'Full Name'}
-          value={newName}
-          onChange={handleName}
-        />
-      </div>
-      <div>
-        Phone: <Input value={newNumber} onChange={handleNumber} />
-      </div>
-      <div>
-        <Button
-          type="submit"
-          className="border-2 border-solid border-purple-200 text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white active:bg-purple-700 ..."
-        >
-          add
-        </Button>
-      </div>
-    </form>
+    <div>
+      <h2 className="text-lg font-semibold text-black p-4 w-80">
+        Add Contacts
+      </h2>
+      <form onSubmit={onSubmit}>
+        <div>
+          name:
+          <Input
+            placeholder={'Full Name'}
+            value={newName}
+            onChange={handleName}
+          />
+        </div>
+        <div>
+          Phone: <Input value={newNumber} onChange={handleNumber} />
+        </div>
+        <div>
+          <Button
+            type="submit"
+            className="border-2 border-solid border-purple-200 text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white active:bg-purple-700 ..."
+          >
+            add
+          </Button>
+        </div>
+      </form>
+    </div>
   )
 }
 export default PersonForm

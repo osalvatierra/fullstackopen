@@ -120,7 +120,9 @@ export default function PhonebookContent({
             {user?.username} logged in
           </p>
 
-          <h3>Search Contacts</h3>
+          <h3 className="text-lg font-semibold text-black p-4 w-80">
+            Search Contacts
+          </h3>
 
           <SearchBox
             onSearch={(searchTerm) => setSearchField(searchTerm)}
