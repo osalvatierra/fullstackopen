@@ -8,6 +8,7 @@ import usersRouter from './controllers/users.js'
 import loginRouter from './controllers/login.js'
 import registerRouter from './controllers/register.js'
 import uploadRouter from './controllers/upload.js'
+import projectsRouter from './controllers/projects.js'
 
 import cors from 'cors'
 
@@ -34,6 +35,8 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/register', registerRouter)
 app.use('/api/upload', uploadRouter)
+app.use('/api/projects', projectsRouter)
+
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
