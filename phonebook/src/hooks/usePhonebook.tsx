@@ -1,5 +1,6 @@
 import { useAuth } from '../contexts/AuthContext'
 import { usePersons } from '../hooks/usePersons'
+import { useProjects } from './useProjects'
 import { useNotifications } from '../contexts/NotificationContext'
 
 interface RegisterData {
@@ -14,6 +15,44 @@ export function usePhonebook() {
   const { showMessage } = useNotifications()
   const { persons, setPersons, handleDelete, handleUpdate, handleSubmit } =
     usePersons(user)
+
+  const {
+    projects,
+    handleDelete: handleProjectDelete,
+    handleUpdate: handleProjectUpdate,
+    handleSubmit: handleProjectSubmit,
+  } = useProjects(user)
+
+  // Add project handlers with messages
+  const handleProjectDeleteWithMessage = async (id: string) => {
+    const projectToDelete = projects.find((p) => p.id === id)
+    const deletedName = projectToDelete?.name ?? 'Unknown'
+
+    try {
+      await handleProjectDelete(id)
+      showMessage(`${deletedName} was deleted`, false)
+    } catch {
+      showMessage('Failed to delete project.', true)
+    }
+  }
+
+  const handleProjectUpdateWithMessage = async (id: string, data: any) => {
+    try {
+      await handleProjectUpdate(id, data)
+      showMessage(`${data.name} was updated`, false)
+    } catch {
+      showMessage('Failed to update project', true)
+    }
+  }
+
+  const handleProjectSubmitWithMessage = async (data: any) => {
+    try {
+      await handleProjectSubmit(data)
+      showMessage(`${data.name} was added`, false)
+    } catch (error: any) {
+      showMessage(error.response?.data?.error || 'Failed to add project', true)
+    }
+  }
 
   const handleLogin = async (username: string, password: string) => {
     try {
@@ -41,7 +80,7 @@ export function usePhonebook() {
 
   const handleUpdateWithMessage = async (
     id: string,
-    data: { name: string; number: string }
+    data: { name: string; number: string },
   ) => {
     try {
       await handleUpdate(id, data)
@@ -68,7 +107,7 @@ export function usePhonebook() {
       if (error.response?.data?.error) {
         errorMessage = error.response.data.error.replace(
           'Person Validation failed: ',
-          ''
+          '',
         )
       } else if (error.message) {
         errorMessage = error.message
@@ -91,11 +130,15 @@ export function usePhonebook() {
 
   return {
     persons,
+    projects,
     handleLogin,
     handleLogout,
     handleRegister,
     handleUpdateWithMessage,
     handleSubmitWithMessage,
     handleDeleteWithMessage,
+    handleProjectDeleteWithMessage,
+    handleProjectUpdateWithMessage,
+    handleProjectSubmitWithMessage,
   }
 }

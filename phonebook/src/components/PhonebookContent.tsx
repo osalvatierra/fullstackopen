@@ -10,6 +10,8 @@ import EditPersonForm from './EditPersonForm'
 import { Phonebook } from '../types/phonebook'
 import { Button } from './ui'
 import { useAuth } from '../contexts/AuthContext'
+import { Project, NewProject } from '../types/project'
+import ProjectContent from './ProjectContent'
 
 interface User {
   name: string
@@ -22,19 +24,27 @@ interface User {
 interface PhonebookContentProps {
   user: User
   persons: Phonebook[]
+  projects: Project[]
   onLogout: () => void
   onDelete: (id: string) => void
   onUpdate: (id: string, data: { name: string; number: string }) => void
   onSubmit: (data: { name: string; number: string }) => void
+  onProjectDelete: (id: string) => Promise<void>
+  onProjectUpdate: (id: string, data: Partial<NewProject>) => Promise<void>
+  onProjectSubmit: (data: NewProject) => Promise<void>
 }
 
 export default function PhonebookContent({
   user,
   persons,
+  projects,
   onLogout,
   onDelete,
   onUpdate,
   onSubmit,
+  onProjectDelete,
+  onProjectUpdate,
+  onProjectSubmit,
 }: PhonebookContentProps) {
   const [searchField, setSearchField] = useState('')
   const [editingPerson, setEditingPerson] = useState<Phonebook | null>(null)
@@ -196,12 +206,29 @@ export default function PhonebookContent({
             onCancel={handleCancelEdit}
           />
         )}
-      </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 p-8">
-        <div className="flex flex-col space-y-4 items-left gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-          <p>test</p>
+        {/* Bottom Left - Projects */}
+        <ProjectContent
+          projects={projects}
+          onDelete={onProjectDelete}
+          onUpdate={onProjectUpdate}
+          onSubmit={onProjectSubmit}
+        />
+
+        {/* Bottom Right - Dashboard (placeholder for now) */}
+        <div className="rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+          <h3 className="text-lg font-semibold mb-4">Dashboard</h3>
+          <p className="text-gray-500">Coming soon...</p>
         </div>
+
+        {/* Edit Person Modal */}
+        {editingPerson && (
+          <EditPersonForm
+            person={editingPerson}
+            onSubmit={handleUpdateSubmit}
+            onCancel={handleCancelEdit}
+          />
+        )}
       </div>
     </>
   )

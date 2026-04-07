@@ -14,12 +14,16 @@ const App = () => {
 
   const {
     persons,
+    projects,
     handleLogin,
     handleLogout,
     handleRegister,
     handleUpdateWithMessage,
     handleSubmitWithMessage,
     handleDeleteWithMessage,
+    handleProjectDeleteWithMessage,
+    handleProjectUpdateWithMessage,
+    handleProjectSubmitWithMessage,
   } = usePhonebook()
 
   console.log('Final persons state:', persons)
@@ -37,10 +41,14 @@ const App = () => {
         <PhonebookContent
           user={user!}
           persons={persons}
+          projects={projects}
           onLogout={handleLogout}
           onDelete={handleDeleteWithMessage}
           onUpdate={handleUpdateWithMessage}
           onSubmit={handleSubmitWithMessage}
+          onProjectDelete={handleProjectDeleteWithMessage}
+          onProjectUpdate={handleProjectUpdateWithMessage}
+          onProjectSubmit={handleProjectSubmitWithMessage}
         />
       )}
     </main>
