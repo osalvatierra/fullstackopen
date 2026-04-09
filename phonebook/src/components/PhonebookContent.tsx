@@ -12,6 +12,7 @@ import { Button } from './ui'
 import { useAuth } from '../contexts/AuthContext'
 import { Project, NewProject } from '../types/project'
 import ProjectContent from './ProjectContent'
+import Dashboard from './Dashboard'
 
 interface User {
   name: string
@@ -216,19 +217,7 @@ export default function PhonebookContent({
         />
 
         {/* Bottom Right - Dashboard (placeholder for now) */}
-        <div className="rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-          <h3 className="text-lg font-semibold mb-4">Dashboard</h3>
-          <p className="text-gray-500">Coming soon...</p>
-        </div>
-
-        {/* Edit Person Modal */}
-        {editingPerson && (
-          <EditPersonForm
-            person={editingPerson}
-            onSubmit={handleUpdateSubmit}
-            onCancel={handleCancelEdit}
-          />
-        )}
+        <Dashboard projects={projects} persons={persons} />
       </div>
     </>
   )

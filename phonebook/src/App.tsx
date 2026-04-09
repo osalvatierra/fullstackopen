@@ -29,7 +29,9 @@ const App = () => {
   console.log('Final persons state:', persons)
 
   return (
-    <main className={`${styles.homemain} flex flex-col min-h-screen`}>
+    <main
+      className={`${isAuthenticated ? styles.homemain : styles.homemainLoggedOut} flex flex-col min-h-screen`}
+    >
       <h2 className={`${styles.headerPhone} text-3xl font-bold p-8`}>
         Personal Project Planner
       </h2>

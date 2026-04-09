@@ -17,12 +17,20 @@
 }
 
 .homemain {
-  height: calc(100vh - 5rem);
   margin: 2.5rem;
   background-size: cover;
   background-position: center;
   padding: 2.5rem 5rem;
-  background-image: url(./img/phonebg.jpg);
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #f0f4f8, #e2e8f0);
+  padding: 2rem;
+}
+
+.homemainLoggedOut {
+  min-height: 100vh;
+  background-color: #00b7ff;
+  background-image: url('./img/pattern-randomized.svg');
+  padding: 2rem;
 }
 .content {
   display: grid;
