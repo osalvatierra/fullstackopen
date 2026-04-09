@@ -35,7 +35,6 @@ const ProjectForm = ({ handleSubmit }: ProjectFormProps) => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-black p-4">Add New Project</h2>
       <form onSubmit={onSubmit} className="space-y-4">
         {/* Project Name */}
         <div>
