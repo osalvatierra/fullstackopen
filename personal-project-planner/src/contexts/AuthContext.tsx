@@ -91,7 +91,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const register = async (credentials: RegisterCredentials) => {
-    await registerService.register(credentials)
+    const result = await registerService.register(credentials)
+
+    if (result.status === 'ok') {
+      dispatch({ type: 'REGISTER_SUCCESS' })
+    } else {
+      throw new Error(result.error)
+    }
   }
 
   return (

@@ -74,7 +74,10 @@ export function usePhonebook() {
       await register(data)
       showMessage('Registration Successful! Please log in', false, 3000)
     } catch (error: any) {
-      showMessage(error.response?.data.error || 'Registration failed', true)
+      showMessage(
+        error.response?.data.error || error.message || 'Registration failed',
+        true,
+      )
     }
   }
 

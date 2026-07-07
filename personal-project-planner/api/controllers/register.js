@@ -27,6 +27,13 @@ registerRouter.post('/', async (req, res) => {
         error: 'Password must be at least 6 characters',
       })
     }
+    const existingUser = await User.findOne({ username: email })
+    if (existingUser) {
+      return res.json({
+        status: 'error',
+        error: 'An account with this email already exists',
+      })
+    }
 
     console.log('Hashing password...')
     // Hash the password
