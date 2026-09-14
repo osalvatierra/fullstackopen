@@ -4,7 +4,7 @@ import { Button, Input } from './ui'
 interface EditProfileFormProps {
   currentName: string
   currentAddress: string
-  onSubmit: (data: { name: string; email: string }) => void
+  onSubmit: (data: { name: string; address: string }) => void
   onCancel: () => void
 }
 
@@ -19,7 +19,7 @@ export default function EditProfileForm({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    onSubmit({ name, email: address })
+    onSubmit({ name, address: address })
   }
 
   return (

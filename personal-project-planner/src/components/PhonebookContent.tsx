@@ -7,6 +7,8 @@ import SearchList from './SearchList'
 import uploadService from '../services/uploadService'
 import { useNotifications } from '../contexts/NotificationContext'
 import EditPersonForm from './EditPersonForm'
+import EditProfileForm from './EditProfileForm'
+import profileService from '../services/personService'
 import { Phonebook } from '../types/phonebook'
 import { Button } from './ui'
 import { useAuth } from '../contexts/AuthContext'
@@ -49,6 +51,7 @@ export default function PhonebookContent({
 }: PhonebookContentProps) {
   const [searchField, setSearchField] = useState('')
   const [editingPerson, setEditingPerson] = useState<Phonebook | null>(null)
+  const [editingProfile, setEditingProfile] = useState(false)
 
   const { updateUser } = useAuth()
   const { showMessage } = useNotifications()
@@ -64,6 +67,25 @@ export default function PhonebookContent({
     setEditingPerson(person)
   }
 
+  const handleProfileUpdate = async (data: {
+    name: string
+    address: string
+  }) => {
+    try {
+      profileService.setToken(user.token)
+      const updatedUser = await profileService.updateProfile(data)
+      updateUser({
+        name: updatedUser.name,
+        address: updatedUser.address,
+        avatarUrl: updatedUser.avatarUrl,
+      })
+      showMessage('Profile updated successfully!', false)
+      setEditingProfile(false)
+    } catch (error) {
+      console.error('Failed to update profile:', error)
+      showMessage('Failed to update profile', true)
+    }
+  }
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -190,35 +212,55 @@ export default function PhonebookContent({
               disabled={uploading}
             />
           </div>
-          <div className="p-5">
-            <h3>Welcome {user?.name} </h3>
-            <h3>
-              Address
-              <br />
-              {user?.address}
-            </h3>
+
+          <div className="flex justify-between items-center mt-4">
+            <div>
+              <h3 className="text-lg font-semibold text-black">
+                Welcome {user?.name}{' '}
+              </h3>
+              <p className="text-gray-600 mt-1">
+                <span className="font-medium">Address:</span>
+                <br />
+                {user?.address || 'No address provided'}
+              </p>
+            </div>
+            <Button
+              onClick={() => setEditingProfile(true)}
+              className="text-sm border-2 border-purple-200 text-purple-600 hover:bg-purple-600 hover:text-white"
+            >
+              Edit Profile
+            </Button>
           </div>
+
+          {editingProfile && (
+            <EditProfileForm
+              name={user.name}
+              address={user.address || ''}
+              onSubmit={handleProfileUpdate}
+              onCancel={() => setEditingProfile(false)}
+            />
+          )}
         </div>
-
-        {editingPerson && (
-          <EditPersonForm
-            person={editingPerson}
-            onSubmit={handleUpdateSubmit}
-            onCancel={handleCancelEdit}
-          />
-        )}
-
-        {/* Bottom Left - Projects */}
-        <ProjectContent
-          projects={projects}
-          onDelete={onProjectDelete}
-          onUpdate={onProjectUpdate}
-          onSubmit={onProjectSubmit}
-        />
-
-        {/* Bottom Right - Dashboard (placeholder for now) */}
-        <Dashboard projects={projects} persons={persons} />
       </div>
+
+      {editingPerson && (
+        <EditPersonForm
+          person={editingPerson}
+          onSubmit={handleUpdateSubmit}
+          onCancel={handleCancelEdit}
+        />
+      )}
+
+      {/* Bottom Left - Projects */}
+      <ProjectContent
+        projects={projects}
+        onDelete={onProjectDelete}
+        onUpdate={onProjectUpdate}
+        onSubmit={onProjectSubmit}
+      />
+
+      {/* Bottom Right - Dashboard (placeholder for now) */}
+      <Dashboard projects={projects} persons={persons} />
     </>
   )
 }
