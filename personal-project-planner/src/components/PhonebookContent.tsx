@@ -8,7 +8,7 @@ import uploadService from '../services/uploadService'
 import { useNotifications } from '../contexts/NotificationContext'
 import EditPersonForm from './EditPersonForm'
 import EditProfileForm from './EditProfileForm'
-import profileService from '../services/personService'
+import profileService from '../services/profileService'
 import { Phonebook } from '../types/phonebook'
 import { Button } from './ui'
 import { useAuth } from '../contexts/AuthContext'
@@ -234,8 +234,8 @@ export default function PhonebookContent({
 
           {editingProfile && (
             <EditProfileForm
-              name={user.name}
-              address={user.address || ''}
+              currentName={user.name}
+              currentAddress={user.address || ''}
               onSubmit={handleProfileUpdate}
               onCancel={() => setEditingProfile(false)}
             />
