@@ -241,26 +241,25 @@ export default function PhonebookContent({
             />
           )}
         </div>
-      </div>
+        {editingPerson && (
+          <EditPersonForm
+            person={editingPerson}
+            onSubmit={handleUpdateSubmit}
+            onCancel={handleCancelEdit}
+          />
+        )}
 
-      {editingPerson && (
-        <EditPersonForm
-          person={editingPerson}
-          onSubmit={handleUpdateSubmit}
-          onCancel={handleCancelEdit}
+        {/* Bottom Left - Projects */}
+        <ProjectContent
+          projects={projects}
+          onDelete={onProjectDelete}
+          onUpdate={onProjectUpdate}
+          onSubmit={onProjectSubmit}
         />
-      )}
 
-      {/* Bottom Left - Projects */}
-      <ProjectContent
-        projects={projects}
-        onDelete={onProjectDelete}
-        onUpdate={onProjectUpdate}
-        onSubmit={onProjectSubmit}
-      />
-
-      {/* Bottom Right - Dashboard (placeholder for now) */}
-      <Dashboard projects={projects} persons={persons} />
+        {/* Bottom Right - Dashboard (placeholder for now) */}
+        <Dashboard projects={projects} persons={persons} />
+      </div>
     </>
   )
 }
