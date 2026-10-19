@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useState, useRef } from 'react'
 import Avatar from 'react-avatar'
 import { Camera } from 'lucide-react'
@@ -52,7 +53,7 @@ export default function PhonebookContent({
   const [searchField, setSearchField] = useState('')
   const [editingPerson, setEditingPerson] = useState<Phonebook | null>(null)
   const [editingProfile, setEditingProfile] = useState(false)
-
+  const navigate = useNavigate()
   const { updateUser } = useAuth()
   const { showMessage } = useNotifications()
   const [isHoveringAvatar, setIsHoveringAvatar] = useState(false)
@@ -157,16 +158,38 @@ export default function PhonebookContent({
             Search Contacts
           </h3>
 
-          <SearchBox
-            onSearch={(searchTerm) => setSearchField(searchTerm)}
-            placeholder="search contacts"
-          />
+          <div className="flex flex-col space-y-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800">
+            <h3 className="text-lg font-semibold">Contacts</h3>
 
-          <SearchList
-            persons={filteredPersons}
-            handleDelete={onDelete}
-            handleEdit={handleEdit}
-          />
+            {/* Show count */}
+            <div className="text-4xl font-bold text-blue-600">
+              {persons.length}
+            </div>
+            <p className="text-gray-500 text-sm">Total Contacts</p>
+
+            {/* Recent contacts preview */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-gray-600">Recent:</h4>
+              {persons.slice(0, 3).map((person) => (
+                <div key={person.id} className="text-sm text-gray-700">
+                  {person.name} — {person.number}
+                </div>
+              ))}
+              {persons.length > 3 && (
+                <p className="text-xs text-gray-400">
+                  +{persons.length - 3} more...
+                </p>
+              )}
+            </div>
+
+            {/* Link to Contacts Page */}
+            <Button
+              onClick={() => navigate('/contacts')}
+              className="mt-auto w-full bg-purple-600 text-white hover:bg-purple-700"
+            >
+              View All Contacts →
+            </Button>
+          </div>
 
           <PersonForm handleSubmit={onSubmit} />
         </div>
