@@ -4,7 +4,7 @@ import { useNotifications } from './contexts/NotificationContext'
 import { usePhonebook } from './hooks/usePhonebook'
 import AuthForms from './components/AuthForms'
 import PhonebookContent from './components/PhonebookContent'
-import ContactsPage from './components/ContactsPage'
+import ContactsPage from './pages/ContactsPage'
 import Notifications from './components/notifications'
 
 import styles from './App.module.css'
