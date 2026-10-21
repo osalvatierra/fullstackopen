@@ -2,9 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useState, useRef } from 'react'
 import Avatar from 'react-avatar'
 import { Camera } from 'lucide-react'
-import SearchBox from './SearchBox'
 import PersonForm from './PersonForm'
-import SearchList from './SearchList'
 import uploadService from '../services/uploadService'
 import { useNotifications } from '../contexts/NotificationContext'
 import EditPersonForm from './EditPersonForm'
@@ -43,14 +41,12 @@ export default function PhonebookContent({
   persons,
   projects,
   onLogout,
-  onDelete,
   onUpdate,
   onSubmit,
   onProjectDelete,
   onProjectUpdate,
   onProjectSubmit,
 }: PhonebookContentProps) {
-  const [searchField, setSearchField] = useState('')
   const [editingPerson, setEditingPerson] = useState<Phonebook | null>(null)
   const [editingProfile, setEditingProfile] = useState(false)
   const navigate = useNavigate()
@@ -62,10 +58,6 @@ export default function PhonebookContent({
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click()
-  }
-
-  const handleEdit = (person: Phonebook) => {
-    setEditingPerson(person)
   }
 
   const handleProfileUpdate = async (data: {
@@ -139,10 +131,6 @@ export default function PhonebookContent({
     setEditingPerson(null)
   }
 
-  const filteredPersons = persons.filter((person) =>
-    person.name.toLowerCase().includes(searchField.toLowerCase()),
-  )
-
   return (
     <>
       <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 p-8">
@@ -153,10 +141,6 @@ export default function PhonebookContent({
           <p className="text-lg font-semibold text-black p-4 w-80">
             {user?.username} logged in
           </p>
-
-          <h3 className="text-lg font-semibold text-black p-4 w-80">
-            Search Contacts
-          </h3>
 
           <div className="flex flex-col space-y-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800">
             <h3 className="text-lg font-semibold">Contacts</h3>
@@ -190,8 +174,6 @@ export default function PhonebookContent({
               View All Contacts →
             </Button>
           </div>
-
-          <PersonForm handleSubmit={onSubmit} />
         </div>
 
         <div className="relative cursor-pointer items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/48 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
